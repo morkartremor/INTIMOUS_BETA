@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dice5, Flame, Heart, Users, ArrowLeft, Zap, Moon, Sun, Shuffle, Play, AlertTriangle, Skull, Beer, Trophy, Bomb } from 'lucide-react';
+import { Dice5, Flame, Heart, Users, ArrowLeft, Zap, Moon, Sun, Shuffle, Play, AlertTriangle, Skull, Beer, Trophy, Bomb, Layers, BarChart } from 'lucide-react';
 
 // --- CONFIGURACIÓN DE AUDIENCIAS ---
 
@@ -15,16 +15,34 @@ const AUDIENCES = [
 const GAMES = [
   { id: 'dice', label: 'Dados Calientes', desc: 'El azar decide tu destino.', icon: Dice5, type: 'action' },
   { id: 'cards', label: 'Verdad o Reto', desc: 'Confesiones o castigos.', icon: Zap, type: 'social' },
+  { id: 'kama', label: 'Kamasutra', desc: 'Posiciones y retos físicos.', icon: Layers, type: 'action' },
   { id: 'never', label: 'Yo Nunca, Nunca', desc: 'Bebe o quítate prenda.', icon: Beer, type: 'social' },
   { id: 'roulette', label: 'Ruleta Rusa', desc: '1 bala. El perdedor paga caro.', icon: Bomb, type: 'risk' },
 ];
 
-// --- BASE DE DATOS DE CONTENIDO PICANTE ---
+// --- BASE DE DATOS DE CONTENIDO ---
 
 const DICE_ACTIONS = ['Lamer', 'Morder', 'Chupar', 'Soplar', 'Masajear', 'Apretar', 'Azotar', 'Acariciar con lengua'];
 const DICE_BODYPARTS = ['Cuello', 'Pezones', 'Lóbulo Oreja', 'Muslos Int.', 'Zona Íntima', 'Nalgas', 'Abdomen', 'Dedos'];
 
-// Castigos de la Ruleta (Específicos por Audiencia)
+// Posiciones (Kamasutra)
+const KAMA_DATA = {
+  soft: [
+    { name: "La Cucharita", diff: 1, desc: "De lado, pegados espalda con pecho. Intimidad máxima." },
+    { name: "El Loto", diff: 2, desc: "Sentados frente a frente, piernas entrelazadas. Ideal para besarse." },
+    { name: "Misionero Profundo", diff: 1, desc: "El clásico, pero ella sube las piernas a los hombros de él." },
+    { name: "El Perrito (Doggy)", diff: 1, desc: "Un clásico infalible para la profundidad." },
+  ],
+  hard: [
+    { name: "El Yunque", diff: 3, desc: "Ella levanta la pelvis, piernas hacia atrás sobre la cabeza." },
+    { name: "La Carretilla", diff: 3, desc: "De pie, él sostiene las piernas de ella mientras ella se apoya en manos." },
+    { name: "La Amazonia", diff: 2, desc: "Ella arriba, pero de espaldas a él, controlando el ritmo." },
+    { name: "El 69 de Pie", diff: 4, desc: "Solo para fuertes. Uno carga al otro invertido. Cuidado." },
+    { name: "La Araña", diff: 3, desc: "Sentados, ella se apoya en manos y pies (cangrejo), él penetra." },
+    { name: "Piernas al Hombro", diff: 2, desc: "Ella boca arriba, una pierna en el hombro de él, la otra estirada." }
+  ]
+};
+
 const ROULETTE_DATA = {
   couple: [
     "Quítate la ropa interior y dásela a tu pareja.",
@@ -74,45 +92,14 @@ const ROULETTE_DATA = {
   ]
 };
 
-// Yo Nunca (Específico por Audiencia)
 const NEVER_DATA = {
-  couple: [
-    "Yo nunca he fingido un orgasmo contigo.",
-    "Yo nunca he deseado hacerlo en un lugar público contigo.",
-    "Yo nunca he querido usar juguetes y no te he dicho.",
-    "Yo nunca he tenido una fantasía con un amigo tuyo.",
-    "Yo nunca he revisado tu celular a escondidas."
-  ],
-  ex: [
-    "Yo nunca he stalkeado tus redes después de terminar.",
-    "Yo nunca he tenido sexo de rebote pensando en ti.",
-    "Yo nunca he hablado mal de ti con mis amigos.",
-    "Yo nunca he guardado fotos nuestras desnudas.",
-    "Yo nunca he deseado volver contigo solo por el sexo."
-  ],
-  friends: [
-    "Yo nunca me he liado con alguien de este grupo.",
-    "Yo nunca he tenido sexo en el baño de un bar.",
-    "Yo nunca he mandado nudes a la persona equivocada.",
-    "Yo nunca he sido infiel.",
-    "Yo nunca he tenido un sueño húmedo con alguien presente."
-  ],
-  ons: [
-    "Yo nunca he tenido una ETS.",
-    "Yo nunca he hecho un trío.",
-    "Yo nunca he usado esposas.",
-    "Yo nunca me he grabado haciéndolo.",
-    "Yo nunca he tragado."
-  ],
-  default: [
-    "Yo nunca he tenido sexo en un coche.",
-    "Yo nunca he usado comida en la cama.",
-    "Yo nunca he sido pillado/a teniéndolo.",
-    "Yo nunca he tenido sexo anal."
-  ]
+  couple: [ "Yo nunca he fingido un orgasmo contigo.", "Yo nunca he deseado hacerlo en un lugar público contigo.", "Yo nunca he querido usar juguetes y no te he dicho.", "Yo nunca he tenido una fantasía con un amigo tuyo.", "Yo nunca he revisado tu celular a escondidas." ],
+  ex: [ "Yo nunca he stalkeado tus redes después de terminar.", "Yo nunca he tenido sexo de rebote pensando en ti.", "Yo nunca he hablado mal de ti con mis amigos.", "Yo nunca he guardado fotos nuestras desnudas.", "Yo nunca he deseado volver contigo solo por el sexo." ],
+  friends: [ "Yo nunca me he liado con alguien de este grupo.", "Yo nunca he tenido sexo en el baño de un bar.", "Yo nunca he mandado nudes a la persona equivocada.", "Yo nunca he sido infiel.", "Yo nunca he tenido un sueño húmedo con alguien presente." ],
+  ons: [ "Yo nunca he tenido una ETS.", "Yo nunca he hecho un trío.", "Yo nunca he usado esposas.", "Yo nunca me he grabado haciéndolo.", "Yo nunca he tragado." ],
+  default: [ "Yo nunca he tenido sexo en un coche.", "Yo nunca he usado comida en la cama.", "Yo nunca he sido pillado/a teniéndolo.", "Yo nunca he tenido sexo anal." ]
 };
 
-// Verdad o Reto (Específico por Audiencia)
 const CARDS_DATA = {
   couple: [
     { type: 'truth', text: '¿Cuál es la fantasía más sucia que tienes conmigo y no has dicho?' },
@@ -142,7 +129,7 @@ const CARDS_DATA = {
     { type: 'dare', text: 'Ponte en la posición que más te guste ahora mismo.' },
     { type: 'truth', text: '¿Qué es lo que NO te gusta que te hagan?' },
   ],
-  friends: [ // Solo aquí hay interacción externa
+  friends: [ 
     { type: 'truth', text: '¿Con quién de aquí tendrías sexo si fuera el fin del mundo?' },
     { type: 'dare', text: 'Manda un mensaje a tu ex diciendo "Te extraño".' },
     { type: 'dare', text: 'Intercambia camiseta con la persona de tu derecha.' },
@@ -161,7 +148,8 @@ const Button = ({ children, onClick, className = "", variant = "primary", disabl
   const variants = {
     primary: "bg-gradient-to-r from-pink-600 via-red-500 to-orange-500 text-white border border-red-400/30",
     secondary: "bg-gray-800 text-white border border-gray-700 hover:bg-gray-700",
-    danger: "bg-gradient-to-r from-red-900 to-red-600 text-white border border-red-500"
+    danger: "bg-gradient-to-r from-red-900 to-red-600 text-white border border-red-500",
+    purple: "bg-gradient-to-r from-purple-900 to-indigo-600 text-white border border-purple-500"
   };
   return (
     <button onClick={onClick} disabled={disabled} className={`${baseStyle} ${variants[variant]} ${className}`}>
@@ -193,6 +181,9 @@ export default function App() {
   const [currentCard, setCurrentCard] = useState(null);
   const [neverText, setNeverText] = useState("Toca para empezar");
   
+  // Kamasutra
+  const [currentPos, setCurrentPos] = useState(null);
+
   // Estados Ruleta
   const [bulletPosition, setBulletPosition] = useState(0);
   const [currentChamber, setCurrentChamber] = useState(0);
@@ -205,10 +196,12 @@ export default function App() {
   };
 
   const handleGameSelect = (gameId) => {
+    // Resetear
     setRouletteStatus('ready');
     setPunishment("");
     setCurrentChamber(0);
     setCurrentCard(null);
+    setCurrentPos(null);
     setNeverText("Toca para empezar");
     setScreen(`play-${gameId}`);
   };
@@ -239,14 +232,25 @@ export default function App() {
   };
 
   const drawCard = () => {
-    // Selección inteligente de mazo
     const deck = CARDS_DATA[selectedAudience?.id] || CARDS_DATA.default;
-    // Si es "Amigos con Derechos" (fwb), usamos una mezcla de ONS y Pareja
     let finalDeck = deck;
     if (selectedAudience?.id === 'fwb') finalDeck = [...CARDS_DATA.ons, ...CARDS_DATA.couple];
-
     const randomCard = finalDeck[Math.floor(Math.random() * finalDeck.length)];
     setCurrentCard(randomCard);
+  };
+
+  const drawPosition = () => {
+    // Selección por intensidad
+    let deck = [];
+    if (['couple', 'fwb', 'ons'].includes(selectedAudience?.id)) {
+        // Mezcla suave y duro
+        deck = [...KAMA_DATA.soft, ...KAMA_DATA.hard];
+    } else {
+        // Solo suave para amigos/citas/ex
+        deck = KAMA_DATA.soft;
+    }
+    const randomPos = deck[Math.floor(Math.random() * deck.length)];
+    setCurrentPos(randomPos);
   };
 
   const nextNever = () => {
@@ -270,7 +274,6 @@ export default function App() {
     if (currentChamber === bulletPosition) {
       if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
       setRouletteStatus('dead');
-      // Seleccionar castigo basado en la audiencia
       const punishments = ROULETTE_DATA[selectedAudience?.id] || ROULETTE_DATA.default;
       setPunishment(punishments[Math.floor(Math.random() * punishments.length)]);
     } else {
@@ -306,7 +309,7 @@ export default function App() {
           <Play fill="currentColor" className="w-5 h-5" /> ENTRAR AL JUEGO
         </Button>
         <div className="text-[10px] text-center text-gray-600 font-mono">
-          v3.0 • +18 • DISCRECIÓN ASEGURADA
+          v4.0 • +18 • DISCRECIÓN ASEGURADA
         </div>
       </div>
     </div>
@@ -345,7 +348,7 @@ export default function App() {
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {GAMES.map((game) => (
           <div key={game.id} onClick={() => handleGameSelect(game.id)} className="flex items-center p-5 bg-gradient-to-r from-gray-900 to-gray-800 border border-gray-700 rounded-2xl cursor-pointer hover:border-pink-500/50 transition-all active:scale-95 select-none shadow-lg">
-            <div className={`p-4 rounded-xl mr-5 shadow-inner ${game.type === 'risk' ? 'bg-red-900/20 text-red-500' : 'bg-gray-950 text-pink-500'}`}>
+            <div className={`p-4 rounded-xl mr-5 shadow-inner ${game.type === 'risk' ? 'bg-red-900/20 text-red-500' : game.type === 'action' ? 'bg-purple-900/20 text-purple-400' : 'bg-gray-950 text-pink-500'}`}>
               <game.icon size={32} />
             </div>
             <div>
@@ -410,6 +413,44 @@ export default function App() {
                </h3>
                <button onClick={drawCard} className="mt-12 px-8 py-3 bg-white/10 backdrop-blur-md rounded-full text-white text-sm font-bold hover:bg-white/20 border border-white/10 transition-all active:scale-95">
                  SIGUIENTE
+               </button>
+             </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  const renderKamaGame = () => (
+    <div className="flex flex-col h-full animate-fade-in bg-purple-950/20">
+      <div className="flex items-center p-4">
+        <button onClick={goBack} className="p-3 bg-gray-800/50 rounded-full">
+          <ArrowLeft className="text-white w-5 h-5" />
+        </button>
+        <h2 className="ml-4 text-xl font-bold text-white">Kamasutra</h2>
+      </div>
+      <div className="flex-1 flex items-center justify-center p-6">
+        {!currentPos ? (
+           <div onClick={drawPosition} className="w-full h-96 bg-purple-900/20 rounded-3xl border-2 border-dashed border-purple-500/50 flex flex-col items-center justify-center cursor-pointer hover:bg-purple-900/30 transition-colors active:scale-95">
+             <Layers className="text-purple-400 w-20 h-20 mb-6" />
+             <p className="text-purple-200 font-bold text-xl">Sugerir Posición</p>
+           </div>
+        ) : (
+          <div className="w-full h-[450px] relative animate-flip-in">
+             <div className="w-full h-full rounded-3xl p-8 flex flex-col items-center justify-center text-center shadow-2xl border-t border-white/10 bg-gradient-to-br from-purple-900 to-indigo-900">
+               <div className="flex gap-1 mb-6">
+                 {[...Array(currentPos.diff)].map((_, i) => (
+                   <Flame key={i} className="w-6 h-6 text-orange-500 fill-orange-500 animate-pulse" />
+                 ))}
+               </div>
+               <h3 className="text-3xl font-black text-white leading-tight drop-shadow-lg mb-4">
+                 {currentPos.name}
+               </h3>
+               <p className="text-purple-200 text-lg leading-relaxed">
+                 {currentPos.desc}
+               </p>
+               <button onClick={drawPosition} className="mt-12 px-8 py-3 bg-white/10 backdrop-blur-md rounded-full text-white text-sm font-bold hover:bg-white/20 border border-white/10 transition-all active:scale-95">
+                 OTRA POSICIÓN
                </button>
              </div>
           </div>
@@ -505,6 +546,7 @@ export default function App() {
         {screen === 'games' && renderGames()}
         {screen === 'play-dice' && renderDiceGame()}
         {screen === 'play-cards' && renderCardGame()}
+        {screen === 'play-kama' && renderKamaGame()}
         {screen === 'play-never' && renderNeverGame()}
         {screen === 'play-roulette' && renderRoulette()}
       </div>
