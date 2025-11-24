@@ -470,7 +470,7 @@ export default function App() {
       </div>
       <div className="space-y-6 px-8">
         <Button onClick={() => setScreen('audience')}><Play fill="currentColor" className="w-5 h-5" /> ENTRAR AL JUEGO</Button>
-        <div className="text-[10px] text-center text-gray-600 font-mono">v9.0 • ALEATORIO & SIN REPETIR</div>
+        <div className="text-[10px] text-center text-gray-600 font-mono">v9.1 • ALEATORIO & SIN REPETIR<br/><span className="opacity-50">by JTA</span></div>
       </div>
     </div>
   );
