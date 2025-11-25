@@ -1,32 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { Dice5, Flame, Heart, Beer, Zap, Moon, Skull, Bomb, Layers, Timer, Pause, RotateCcw, Play, ArrowLeft, Image as ImageIcon, AlertTriangle, ShieldCheck, Shuffle } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Dice5, Flame, Heart, Beer, Zap, Moon, Skull, Bomb, Layers, Timer, Pause, RotateCcw, Play, ArrowLeft, Image as ImageIcon, AlertTriangle, ShieldCheck, Shuffle, Crosshair, Thermometer, Clock } from 'lucide-react';
 
 // --- CONFIGURACIÓN DE AUDIENCIAS ---
 const AUDIENCES = [
-  { id: 'couple', label: 'Pareja Estable', icon: Heart, desc: 'Reavivar la llama y fantasías', color: 'text-rose-500', bg: 'bg-rose-500/20' },
-  { id: 'friends', label: 'Amigos / Fiesta', icon: Beer, desc: 'Descontrol y risas (Grupal)', color: 'text-blue-400', bg: 'bg-blue-500/20' },
-  { id: 'date', label: 'Primera Cita', icon: Moon, desc: 'Tensión y romper el hielo', color: 'text-purple-400', bg: 'bg-purple-500/20' },
-  { id: 'ons', label: 'Una Noche', icon: Flame, desc: 'Directo al grano, sin charla', color: 'text-orange-500', bg: 'bg-orange-500/20' },
-  { id: 'fwb', label: 'Amigos con Derechos', icon: Zap, desc: 'Experimentar sin límites', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
-  { id: 'ex', label: 'Ex Pareja', icon: Skull, desc: 'Rencor y nostalgia', color: 'text-gray-400', bg: 'bg-gray-500/20' },
+  { id: 'couple', label: 'Pareja Estable', icon: Heart, desc: 'Fantasías, conexión y límites nuevos', color: 'text-rose-500', bg: 'bg-rose-500/20' },
+  { id: 'fwb', label: 'Amigos con Derechos', icon: Zap, desc: 'Placer directo sin ataduras', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
+  { id: 'ons', label: 'Una Noche', icon: Flame, desc: 'Aquí y ahora. Sin preguntas.', color: 'text-orange-500', bg: 'bg-orange-500/20' },
+  { id: 'date', label: 'Primera Cita', icon: Moon, desc: 'Romper el hielo con tensión', color: 'text-purple-400', bg: 'bg-purple-500/20' },
+  { id: 'friends', label: 'Fiesta / Grupo', icon: Beer, desc: 'Descontrol social y risas', color: 'text-blue-400', bg: 'bg-blue-500/20' },
+  { id: 'ex', label: 'Ex Pareja', icon: Skull, desc: 'Morbo, rencor y despedidas', color: 'text-gray-400', bg: 'bg-gray-500/20' },
 ];
 
 // --- JUEGOS DISPONIBLES ---
 const GAMES = [
-  { id: 'dice', label: 'Dados Calientes', desc: 'El azar decide tu destino.', icon: Dice5, type: 'action' },
-  { id: 'cards', label: 'Verdad o Reto', desc: 'Confesiones o castigos.', icon: Zap, type: 'social' },
-  { id: 'kama', label: 'Kamasutra', desc: 'Biblioteca de posiciones.', icon: Layers, type: 'action' },
-  { id: 'timer', label: 'Rally Cronometrado', desc: 'Cambio automático.', icon: Timer, type: 'action' },
-  { id: 'never', label: 'Yo Nunca, Nunca', desc: 'Bebe o quítate prenda.', icon: Beer, type: 'social' },
-  { id: 'roulette', label: 'Ruleta del Caos', desc: 'Riesgo total.', icon: Bomb, type: 'risk' },
+  { id: 'cards', label: 'Verdad o Reto X', desc: 'Retos explícitos y confesiones.', icon: Zap, type: 'social' },
+  { id: 'dice', label: 'Dados Calientes', desc: 'Acción + Parte del cuerpo.', icon: Dice5, type: 'action' },
+  { id: 'kama', label: 'Kamasutra', desc: 'Posiciones por nivel.', icon: Layers, type: 'action' },
+  { id: 'timer', label: 'Rally Cronometrado', desc: 'Cambio de posición automático.', icon: Timer, type: 'action' },
+  { id: 'roulette', label: 'Ruleta Rusa', desc: 'Castigos extremos.', icon: Bomb, type: 'risk' },
+  { id: 'never', label: 'Yo Nunca XXX', desc: 'Confesiones subidas de tono.', icon: Beer, type: 'social' },
 ];
 
-// --- NIVELES DE INTENSIDAD (AHORA CON MODO ALEATORIO) ---
+// --- 5 NIVELES DE INTENSIDAD ---
 const HEAT_LEVELS = [
-  { level: 1, label: 'Suave', icon: '🔥', color: 'text-yellow-400', desc: 'Divertido' },
-  { level: 2, label: 'Picante', icon: '🔥🔥', color: 'text-orange-500', desc: 'Sensual' },
-  { level: 3, label: 'Extremo', icon: '🔥🔥🔥', color: 'text-red-600', desc: 'Sin censura' },
-  { level: 'all', label: 'Aleatorio', icon: <Shuffle size={18} />, color: 'text-blue-400', desc: '¡Todo vale!' }
+  { level: 1, label: 'Coqueto', icon: '🔥', color: 'text-blue-300', desc: 'Calentamiento' },
+  { level: 2, label: 'Caliente', icon: '🔥🔥', color: 'text-yellow-400', desc: 'Manos inquietas' },
+  { level: 3, label: 'Erótico', icon: '🔥🔥🔥', color: 'text-orange-500', desc: 'Oral y Juguetes' },
+  { level: 4, label: 'Hardcore', icon: '💀', color: 'text-red-500', desc: 'Fetiches y Acción' },
+  { level: 5, label: 'XXX', icon: '😈', color: 'text-purple-500', desc: 'Sin Límites' },
+  { level: 'all', label: 'Caos', icon: <Shuffle size={16} />, color: 'text-white', desc: '¡TODO VALE!' }
 ];
 
 // --- HELPER: BARAJAR ---
@@ -39,80 +41,101 @@ const shuffleArray = (array) => {
   return newArray;
 };
 
-// --- DATOS ---
-const DICE_ACTIONS = [
-  { text: 'Soplar', level: 1 }, { text: 'Acariciar', level: 1 }, { text: 'Masajear', level: 1 }, { text: 'Hacer cosquillas', level: 1 },
-  { text: 'Besar', level: 1 }, { text: 'Rozar', level: 2 }, { text: 'Lamer', level: 2 }, { text: 'Morder', level: 2 },
-  { text: 'Chupar', level: 2 }, { text: 'Apretar', level: 2 }, { text: 'Nalguear', level: 3 }, { text: 'Azotar', level: 3 },
-  { text: 'Arañar', level: 3 }, { text: 'Dominar', level: 3 }
+// --- BASE DE DATOS EXTENDIDA ---
+
+const CARDS_DB = [
+  // NIVEL 1
+  { level: 1, type: 'truth', text: '¿Qué ropa interior llevas puesta hoy? Descríbela.' },
+  { level: 1, type: 'truth', text: '¿Cuál es la parte de mi cuerpo que más te gusta mirar?' },
+  { level: 1, type: 'dare', text: 'Bésame el cuello suavemente.', time: 30 },
+  { level: 1, type: 'dare', text: 'Dame un masaje en los hombros.', time: 60 },
+  { level: 1, type: 'dare', text: 'Muerde mi labio inferior suavemente.' },
+  
+  // NIVEL 2
+  { level: 2, type: 'truth', text: '¿Te has tocado pensando en mí alguna vez?' },
+  { level: 2, type: 'dare', text: 'Quítate una prenda (que no sea zapatos o accesorios).' },
+  { level: 2, type: 'dare', text: 'Pasa tu mano por dentro de mi ropa interior sin tocar "eso".' },
+  { level: 2, type: 'dare', text: 'Bésame la parte interna del muslo.' },
+  { level: 2, type: 'dare', text: 'Hazme un baile sensual (con ropa).', time: 60 },
+  
+  // NIVEL 3
+  { level: 3, type: 'dare', text: 'Quítate la ropa interior y entrégamela.' },
+  { level: 3, type: 'dare', text: 'Usa un cubo de hielo para recorrer todo mi cuerpo.', time: 60 },
+  { level: 3, type: 'dare', text: 'Véndate los ojos y déjate hacer lo que yo quiera.', time: 120 },
+  { level: 3, type: 'dare', text: 'Practícame sexo oral.', time: 120 },
+  { level: 3, type: 'dare', text: 'Mastúrbame con la mano.', time: 120 },
+  
+  // NIVEL 4
+  { level: 4, type: 'dare', text: 'Si tienes pene, deja que te lo masturbe con los pies.', time: 90 },
+  { level: 4, type: 'dare', text: 'Ponte en cuatro y deja que te azote 3 veces firmemente.' },
+  { level: 4, type: 'dare', text: 'Escúpeme en la boca (o donde prefieras) suavemente.' },
+  { level: 4, type: 'dare', text: 'Lame mis genitales pero NO permitas que llegue al orgasmo (Edging).', time: 180 },
+  { level: 4, type: 'dare', text: 'Chupa mis dedos del pie apasionadamente.', time: 60 },
+  
+  // NIVEL 5
+  { level: 5, type: 'dare', text: 'Penetración rápida: ¡Solo tienen este tiempo!', time: 30 },
+  { level: 5, type: 'dare', text: 'Sexo oral hasta que termine (orgasmo obligatorio).' },
+  { level: 5, type: 'dare', text: 'Hazme un Creampie (o simúlalo).' },
+  { level: 5, type: 'dare', text: 'Fóllame en la posición que yo elija ahora mismo.' },
+  { level: 5, type: 'dare', text: 'Dedos o lengua en el ano (Rimming).', time: 60 },
+  { level: 5, type: 'dare', text: 'Trágatelo todo (o déjalo caer en mi cuerpo).' },
+  { level: 5, type: 'dare', text: 'Orgasmo mutuo: No paramos hasta que ambos terminemos.' },
 ];
 
+const DICE_ACTIONS = [
+  { text: 'Besar', level: 1 }, { text: 'Acariciar', level: 1 }, { text: 'Soplar', level: 1 }, { text: 'Susurrar', level: 1 },
+  { text: 'Lamer', level: 2 }, { text: 'Morder', level: 2 }, { text: 'Chupar', level: 2 }, { text: 'Apretar', level: 2 },
+  { text: 'Nalguear', level: 3 }, { text: 'Masajear con aceite', level: 3 }, { text: 'Vibrar en', level: 3 },
+  { text: 'Escupir', level: 4 }, { text: 'Pellizcar', level: 4 }, { text: 'Dominar', level: 4 }, { text: 'Pies en', level: 4 },
+  { text: 'Penetrar', level: 5 }, { text: 'Orgasmo en', level: 5 }, { text: 'Garganta profunda', level: 5 }, { text: 'Follar', level: 5 }
+];
 const DICE_BODYPARTS = [
-  { text: 'Mano', level: 1 }, { text: 'Brazo', level: 1 }, { text: 'Mejilla', level: 1 }, { text: 'Cabello', level: 1 },
-  { text: 'Cuello', level: 2 }, { text: 'Espalda', level: 2 }, { text: 'Ombligo', level: 2 }, { text: 'Muslo', level: 2 },
-  { text: 'Oreja', level: 2 }, { text: 'Labios', level: 2 }, { text: 'Pechos', level: 3 }, { text: 'Trasero', level: 3 },
-  { text: 'Entrepierna', level: 3 }, { text: 'Zona Íntima', level: 3 }
+  { text: 'Cuello', level: 1 }, { text: 'Oreja', level: 1 }, { text: 'Manos', level: 1 }, { text: 'Labios', level: 1 },
+  { text: 'Pezones', level: 2 }, { text: 'Muslos', level: 2 }, { text: 'Ombligo', level: 2 }, { text: 'Espalda Baja', level: 2 },
+  { text: 'Genitales', level: 3 }, { text: 'Trasero', level: 3 }, { text: 'Perineo', level: 3 },
+  { text: 'Pies', level: 4 }, { text: 'Axilas', level: 4 }, { text: 'Garganta', level: 4 }, { text: 'Ano', level: 4 },
+  { text: 'Donde quieras', level: 5 }, { text: 'Boca (Oral)', level: 5 }, { text: 'Adentro', level: 5 }
 ];
 
 const KAMA_POSITIONS = [
-  { name: "La Cucharita", level: 1, desc: "De lado, pegados espalda con pecho. Intimidad máxima.", img: "cucharita.png" },
-  { name: "El Loto", level: 1, desc: "Sentados frente a frente, piernas entrelazadas.", img: "lotus.png" },
-  { name: "Misionero", level: 1, desc: "El clásico contacto visual y emocional.", img: "missionary.png" },
-  { name: "La Silla", level: 1, desc: "Él sentado, ella encima frente a frente.", img: "chair.png" },
-  { name: "El Abrazo", level: 1, desc: "Misionero muy pegado, pecho con pecho.", img: "hug.png" },
-  { name: "Perrito (Doggy)", level: 2, desc: "Un clásico infalible desde atrás.", img: "doggy.png" },
-  { name: "Vaquera", level: 2, desc: "Ella arriba controlando el ritmo.", img: "cowgirl.png" },
-  { name: "El 69", level: 2, desc: "Placer oral mutuo simultáneo.", img: "69.png" },
-  { name: "Piernas al Hombro", level: 2, desc: "Ella boca arriba, piernas en hombros de él.", img: "legs_up.png" },
-  { name: "La Boa", level: 2, desc: "Misionero con piernas de ella juntas y estiradas.", img: "boa.png" },
-  { name: "El Sofá", level: 2, desc: "Ella boca abajo en el borde, él detrás.", img: "sofa.png" },
-  { name: "El Yunque", level: 3, desc: "Ella levanta pelvis, piernas muy atrás.", img: "anvil.png" },
-  { name: "La Carretilla", level: 3, desc: "De pie, él sostiene las piernas de ella.", img: "wheelbarrow.png" },
-  { name: "El Helicóptero", level: 3, desc: "Giro sobre el cuerpo del otro. Difícil.", img: "helicopter.png" },
-  { name: "De Pie", level: 3, desc: "Contra la pared o en el aire.", img: "standing.png" },
-  { name: "La Araña", level: 3, desc: "Sentados, ella estilo cangrejo.", img: "spider.png" },
-  { name: "69 de Pie", level: 3, desc: "Uno carga al otro invertido. ¡Cuidado!", img: "standing_69.png" }
-];
-
-const CARDS_DB = [
-  { type: 'truth', text: '¿Qué fue lo primero que te gustó de mí?', level: 1 },
-  { type: 'truth', text: '¿Cuál es tu lugar favorito para que te besen?', level: 1 },
-  { type: 'dare', text: 'Dame un masaje en los hombros por 1 min.', level: 1 },
-  { type: 'dare', text: 'Bésame en la mejilla por 5 segundos.', level: 1 },
-  { type: 'truth', text: '¿Qué ropa interior te excita más?', level: 2 },
-  { type: 'truth', text: '¿Cuál es tu fantasía recurrente?', level: 2 },
-  { type: 'dare', text: 'Quítate una prenda (no ropa interior).', level: 2 },
-  { type: 'dare', text: 'Bésame el cuello apasionadamente.', level: 2 },
-  { type: 'dare', text: 'Hazme un baile sexy con ropa.', level: 2 },
-  { type: 'truth', text: '¿Te gustaría grabarnos haciéndolo?', level: 3 },
-  { type: 'truth', text: '¿Has tenido un trío o te gustaría?', level: 3 },
-  { type: 'dare', text: 'Quítate la ropa interior y dámela.', level: 3 },
-  { type: 'dare', text: 'Usa mi mano para tocarte.', level: 3 },
-  { type: 'dare', text: 'Sexo oral por 2 minutos.', level: 3 },
-  { type: 'dare', text: 'Véndate los ojos y déjate hacer.', level: 3 }
+  { name: "Cucharita", level: 1, desc: "Intimidad lateral.", img: "spoon.png" },
+  { name: "Loto", level: 1, desc: "Sentados frente a frente.", img: "lotus.png" },
+  { name: "Misionero", level: 2, desc: "Clásico y romántico.", img: "missionary.png" },
+  { name: "Perrito", level: 2, desc: "Desde atrás, control total.", img: "doggy.png" },
+  { name: "La Silla", level: 1, desc: "Él sentado, ella encima.", img: "chair.png" },
+  { name: "La Fusión", level: 1, desc: "Piernas entrelazadas.", img: "fusion.png" },
+  { name: "Vaquera", level: 3, desc: "Ella arriba controla.", img: "cowgirl.png" },
+  { name: "El 69", level: 3, desc: "Oral mutuo.", img: "69.png" },
+  { name: "Piernas al Hombro", level: 3, desc: "Profundidad máxima.", img: "legs_up.png" },
+  { name: "Vaquera Invertida", level: 3, desc: "Ella arriba de espaldas.", img: "rev_cowgirl.png" },
+  { name: "El Yunque", level: 4, desc: "Pelvis arriba, piernas atrás.", img: "anvil.png" },
+  { name: "La Carretilla", level: 4, desc: "De pie, sosteniendo piernas.", img: "wheelbarrow.png" },
+  { name: "Cara a Cara", level: 4, desc: "Sentados, penetración profunda.", img: "chair_sex.png" },
+  { name: "Anal (Cuchara)", level: 5, desc: "Acceso trasero suave.", img: "anal_spoon.png" },
+  { name: "Garganta Profunda", level: 5, desc: "Posición para oral extremo.", img: "deep.png" },
+  { name: "69 de Pie", level: 5, desc: "Acrobacia oral total.", img: "standing_69.png" },
+  { name: "La Araña", level: 5, desc: "Entrelazados complejos.", img: "spider.png" },
+  { name: "El Helicóptero", level: 5, desc: "Girando sobre el pene.", img: "helicopter.png" }
 ];
 
 const ROULETTE_DB = [
-  { text: "Bebe un trago.", level: 1 },
-  { text: "Beso de 5 segundos.", level: 1 },
-  { text: "Cuenta un chiste o bebe.", level: 1 },
-  { text: "Quítate una prenda.", level: 2 },
-  { text: "Nalgada.", level: 2 },
-  { text: "Beso con lengua.", level: 2 },
-  { text: "Muestra tu última foto.", level: 2 },
-  { text: "Shot doble.", level: 3 },
-  { text: "Ropa interior fuera.", level: 3 },
-  { text: "Oral 1 minuto.", level: 3 },
-  { text: "Deja que te aten las manos.", level: 3 }
+  { text: "Bebe un trago.", level: 1 }, { text: "Beso de 10s.", level: 1 },
+  { text: "Quítate la camisa.", level: 2 }, { text: "Nalgada seca.", level: 2 },
+  { text: "Quítate ropa interior.", level: 3 }, { text: "Oral 1 minuto.", level: 3 },
+  { text: "Chupar dedos del pie.", level: 4 }, { text: "Azotes con cinturón.", level: 4 },
+  { text: "Penetración anal (o intento).", level: 5 }, { text: "Tragar (Cumswallow).", level: 5 },
+  { text: "Striptease integral ya.", level: 4 }, { text: "Hielo en genitales.", level: 3 }
 ];
 
 const NEVER_DATA = [
-  { text: "Yo nunca he tenido sexo en el coche.", level: 1 },
-  { text: "Yo nunca he besado a un amigo.", level: 1 },
-  { text: "Yo nunca he tenido sexo en la playa.", level: 2 },
-  { text: "Yo nunca he mandado un nude.", level: 2 },
-  { text: "Yo nunca he hecho un trío.", level: 3 },
-  { text: "Yo nunca he tenido sexo anal.", level: 3 },
+  { text: "Yo nunca he besado en la primera cita.", level: 1 },
+  { text: "Yo nunca he mandado nudes.", level: 2 },
+  { text: "Yo nunca he tenido sexo en un lugar público.", level: 3 },
+  { text: "Yo nunca he tenido un fetiche de pies.", level: 4 },
+  { text: "Yo nunca he participado en una orgía.", level: 5 },
+  { text: "Yo nunca he probado el sabor de mi propio fluido.", level: 5 },
+  { text: "Yo nunca me he grabado teniendo sexo.", level: 4 },
+  { text: "Yo nunca he usado comida en el sexo.", level: 3 }
 ];
 
 // --- COMPONENTES UI ---
@@ -124,23 +147,19 @@ const Button = ({ children, onClick, className = "", variant = "primary", disabl
     danger: "bg-gradient-to-r from-red-900 to-red-600 text-white border border-red-500",
     green: "bg-gradient-to-r from-emerald-600 to-teal-600 text-white border border-emerald-500"
   };
-  return (
-    <button onClick={onClick} disabled={disabled} className={`${baseStyle} ${variants[variant]} ${className}`}>
-      {children}
-    </button>
-  );
+  return <button onClick={onClick} disabled={disabled} className={`${baseStyle} ${variants[variant]} ${className}`}>{children}</button>;
 };
 
 const HeatSelector = ({ currentLevel, setLevel }) => (
-  <div className="flex justify-between bg-gray-900/80 p-2 rounded-2xl mb-6 border border-gray-700 gap-2">
+  <div className="grid grid-cols-6 gap-1 bg-gray-900/80 p-2 rounded-2xl mb-4 border border-gray-700">
     {HEAT_LEVELS.map((h) => (
       <button
         key={h.level}
         onClick={() => setLevel(h.level)}
-        className={`flex-1 py-2 px-1 rounded-xl flex flex-col items-center justify-center transition-all ${currentLevel === h.level ? 'bg-gray-800 border border-gray-600 shadow-lg scale-105' : 'opacity-50 hover:opacity-80'}`}
+        className={`flex flex-col items-center justify-center py-2 rounded-lg transition-all ${currentLevel === h.level ? 'bg-gray-800 border border-gray-500 shadow-white/10 shadow-lg scale-105' : 'opacity-40 hover:opacity-70'}`}
       >
-        <span className="text-xl mb-1">{h.icon}</span>
-        <span className={`text-[10px] font-bold uppercase ${h.color}`}>{h.label}</span>
+        <span className="text-lg">{h.icon}</span>
+        <span className={`text-[8px] font-bold uppercase mt-1 ${h.color}`}>{h.level === 'all' ? 'RAND' : `NVL ${h.level}`}</span>
       </button>
     ))}
   </div>
@@ -148,9 +167,7 @@ const HeatSelector = ({ currentLevel, setLevel }) => (
 
 const CardItem = ({ label, desc, icon: Icon, onClick, color, bg }) => (
   <div onClick={onClick} className={`relative overflow-hidden cursor-pointer group p-4 rounded-2xl border border-gray-800 bg-gray-900/80 backdrop-blur-sm hover:border-pink-500/50 transition-all duration-300 active:scale-95 select-none`}>
-    <div className={`absolute top-0 right-0 p-3 rounded-bl-2xl ${bg}`}>
-      <Icon className={`w-6 h-6 ${color}`} />
-    </div>
+    <div className={`absolute top-0 right-0 p-3 rounded-bl-2xl ${bg}`}><Icon className={`w-6 h-6 ${color}`} /></div>
     <h3 className="text-xl font-bold text-gray-100 mt-2">{label}</h3>
     <p className="text-sm text-gray-400 mt-1">{desc}</p>
   </div>
@@ -160,7 +177,7 @@ const CardItem = ({ label, desc, icon: Icon, onClick, color, bg }) => (
 export default function App() {
   const [screen, setScreen] = useState('home'); 
   const [selectedAudience, setSelectedAudience] = useState(null);
-  const [heatLevel, setHeatLevel] = useState(1); // 1, 2, 3, or 'all'
+  const [heatLevel, setHeatLevel] = useState(1);
   
   // Estados
   const [dice1, setDice1] = useState('?');
@@ -169,79 +186,124 @@ export default function App() {
   const [currentCard, setCurrentCard] = useState(null);
   const [currentPos, setCurrentPos] = useState(null);
   const [neverText, setNeverText] = useState("Toca para empezar");
-  
-  // Mazos
   const [cardDeck, setCardDeck] = useState([]);
   const [kamaDeck, setKamaDeck] = useState([]);
   const [neverDeck, setNeverDeck] = useState([]);
+  
+  // **NUEVO: Estado de "Temperatura Actual" para el modo aleatorio inteligente**
+  const [currentSessionHeat, setCurrentSessionHeat] = useState(1);
 
-  // Ruleta & Timer
+  // Estados Ruleta y Timer
   const [rouletteChambers, setRouletteChambers] = useState([]); 
   const [currentChamberIdx, setCurrentChamberIdx] = useState(0);
   const [rouletteStatus, setRouletteStatus] = useState('ready'); 
   const [punishment, setPunishment] = useState("");
+  const [shotsFired, setShotsFired] = useState([]);
+  const [doubleBullet, setDoubleBullet] = useState(false);
+  const [cardTimer, setCardTimer] = useState(null);
+  const [isCardTimerRunning, setIsCardTimerRunning] = useState(false);
   const [timer, setTimer] = useState(60);
   const [isTimerActive, setIsTimerActive] = useState(false);
 
-  // Audio
   const playSound = (type) => {
     if (navigator.vibrate) {
        if (type === 'bang') navigator.vibrate([500, 200, 500]);
        else if (type === 'click') navigator.vibrate(50);
+       else if (type === 'spin') navigator.vibrate(300);
     }
   };
 
+  // Timer Effects
   useEffect(() => {
     let interval = null;
-    if (screen === 'play-timer' && isTimerActive && timer > 0) {
-      interval = setInterval(() => setTimer((t) => t - 1), 1000);
-    } else if (screen === 'play-timer' && isTimerActive && timer === 0) {
-      playSound('bang'); drawPosition(); setTimer(60); 
-    }
+    if (screen === 'play-timer' && isTimerActive && timer > 0) interval = setInterval(() => setTimer((t) => t - 1), 1000);
+    else if (screen === 'play-timer' && isTimerActive && timer === 0) { playSound('bang'); drawPosition(); setTimer(60); }
     return () => clearInterval(interval);
   }, [screen, isTimerActive, timer]);
+
+  useEffect(() => {
+    let interval = null;
+    if (isCardTimerRunning && cardTimer > 0) interval = setInterval(() => setCardTimer((t) => t - 1), 1000);
+    else if (isCardTimerRunning && cardTimer === 0) { playSound('bang'); setIsCardTimerRunning(false); }
+    return () => clearInterval(interval);
+  }, [isCardTimerRunning, cardTimer]);
 
   const handleAudienceSelect = (audience) => { setSelectedAudience(audience); setScreen('games'); };
   
   const handleGameSelect = (gameId) => {
-    setRouletteStatus('ready'); setPunishment(""); setCurrentCard(null); setCurrentPos(null); setNeverText("Toca para empezar"); setIsTimerActive(false); setTimer(60);
+    setRouletteStatus('ready'); setPunishment(""); setCurrentCard(null); setCurrentPos(null); setNeverText("Toca para empezar"); setIsTimerActive(false); setTimer(60); setShotsFired([]);
+    setCardTimer(null); setIsCardTimerRunning(false); setCurrentSessionHeat(1); // Reset heat on game start
     
-    // FILTRADO DE CONTENIDO
-    const filterContent = (data) => {
-        if (heatLevel === 'all') return data;
-        return data.filter(item => item.level <= heatLevel);
-    };
-
-    if (gameId === 'cards') {
-        setCardDeck(shuffleArray(filterContent(CARDS_DB)));
-    } else if (gameId === 'kama' || gameId === 'timer') {
-        setKamaDeck(shuffleArray(filterContent(KAMA_POSITIONS)));
-    } else if (gameId === 'never') {
-        setNeverDeck(shuffleArray(filterContent(NEVER_DATA)));
-    }
+    // Initial deck population
+    if (gameId === 'cards') setCardDeck(shuffleArray(filterContent(CARDS_DB)));
+    else if (gameId === 'kama' || gameId === 'timer') setKamaDeck(shuffleArray(filterContent(KAMA_POSITIONS)));
+    else if (gameId === 'never') setNeverDeck(shuffleArray(filterContent(NEVER_DATA)));
     
     setScreen(`play-${gameId}`);
   };
 
-  const goBack = () => { setIsTimerActive(false); if (screen.startsWith('play-')) setScreen('games'); else if (screen === 'games') setScreen('audience'); else if (screen === 'audience') setScreen('home'); };
+  const goBack = () => { setIsTimerActive(false); setIsCardTimerRunning(false); if (screen.startsWith('play-')) setScreen('games'); else if (screen === 'games') setScreen('audience'); else if (screen === 'audience') setScreen('home'); };
 
-  // Mecánicas
+  // --- LÓGICA "SMART HEAT" ---
+  // Filtra el contenido base. Si es 'all', permite todo inicialmente.
+  const filterContent = (data) => (heatLevel === 'all' ? data : data.filter(item => item.level <= heatLevel));
+
+  // Esta función elige el siguiente item asegurando que no baje el nivel drásticamente
+  const pickSmartItem = (deck) => {
+    if (heatLevel !== 'all') {
+        // En modo manual, comportamiento normal (pop)
+        const item = deck[deck.length - 1];
+        const newDeck = deck.slice(0, deck.length - 1);
+        return { item, newDeck };
+    } else {
+        // En modo 'CAOS', aplicamos lógica inteligente
+        // Filtramos candidatos que sean >= (Nivel Actual - 1)
+        // Ejemplo: Si estamos en nivel 4, solo aceptamos 3, 4, 5.
+        const minAllowed = Math.max(1, currentSessionHeat - 1);
+        let candidates = deck.filter(item => item.level >= minAllowed);
+        
+        // Si no hay candidatos (se acabaron los niveles altos), reiniciamos y permitimos todo
+        if (candidates.length === 0) candidates = deck;
+
+        // Elegir uno al azar de los candidatos válidos
+        const item = candidates[Math.floor(Math.random() * candidates.length)];
+        
+        // Actualizar la temperatura de la sesión con el nuevo nivel
+        setCurrentSessionHeat(item.level);
+
+        // Remover el item seleccionado del mazo original
+        const newDeck = deck.filter(i => i !== item);
+        return { item, newDeck };
+    }
+  };
+
   const rollDice = () => {
     if (isRolling) return; setIsRolling(true); playSound('click');
     
-    let actions, parts;
-    if (heatLevel === 'all') {
-        actions = DICE_ACTIONS;
-        parts = DICE_BODYPARTS;
-    } else {
-        actions = DICE_ACTIONS.filter(d => d.level <= heatLevel);
-        parts = DICE_BODYPARTS.filter(d => d.level <= heatLevel);
-    }
+    // Lógica Smart Heat para dados también
+    let minLevel = 1;
+    if (heatLevel === 'all') minLevel = Math.max(1, currentSessionHeat - 1);
     
+    const filterDice = (arr) => {
+        if (heatLevel !== 'all') return arr.filter(d => d.level <= heatLevel);
+        let candidates = arr.filter(d => d.level >= minLevel);
+        if (candidates.length === 0) candidates = arr;
+        return candidates;
+    };
+
+    const actions = filterDice(DICE_ACTIONS);
+    const parts = filterDice(DICE_BODYPARTS);
+
     let counter = 0;
     const interval = setInterval(() => {
-      setDice1(actions[Math.floor(Math.random() * actions.length)].text.toUpperCase());
-      setDice2(parts[Math.floor(Math.random() * parts.length)].text.toUpperCase());
+      const act = actions[Math.floor(Math.random() * actions.length)];
+      const part = parts[Math.floor(Math.random() * parts.length)];
+      setDice1(act.text.toUpperCase());
+      setDice2(part.text.toUpperCase());
+      
+      // Actualizar calor en el último frame
+      if (counter === 12) setCurrentSessionHeat(Math.max(act.level, part.level));
+      
       counter++;
       if (counter > 12) { clearInterval(interval); setIsRolling(false); playSound('click'); }
     }, 80);
@@ -250,70 +312,86 @@ export default function App() {
   const drawCard = () => {
     let currentDeck = [...cardDeck];
     if (currentDeck.length === 0) { 
-        const data = heatLevel === 'all' ? CARDS_DB : CARDS_DB.filter(c => c.level <= heatLevel);
+        const data = filterContent(CARDS_DB);
         currentDeck = shuffleArray(data); 
     }
-    const card = currentDeck.pop(); setCardDeck(currentDeck); setCurrentCard(card);
+    const { item, newDeck } = pickSmartItem(currentDeck);
+    setCardDeck(newDeck);
+    setCurrentCard(item);
+    if (item.time) { setCardTimer(item.time); setIsCardTimerRunning(false); } else setCardTimer(null);
   };
 
   const drawPosition = () => {
     let currentDeck = [...kamaDeck];
-    if (currentDeck.length === 0) {
-        const data = heatLevel === 'all' ? KAMA_POSITIONS : KAMA_POSITIONS.filter(p => p.level <= heatLevel);
+    if (currentDeck.length === 0) { 
+        const data = filterContent(KAMA_POSITIONS);
         currentDeck = shuffleArray(data);
     }
-    const pos = currentDeck.pop(); setKamaDeck(currentDeck); setCurrentPos(pos);
+    const { item, newDeck } = pickSmartItem(currentDeck);
+    setKamaDeck(newDeck);
+    setCurrentPos(item);
   };
 
   const nextNever = () => {
     let currentDeck = [...neverDeck];
     if (currentDeck.length === 0) {
-        const data = heatLevel === 'all' ? NEVER_DATA : NEVER_DATA.filter(n => n.level <= heatLevel);
+        const data = filterContent(NEVER_DATA);
         currentDeck = shuffleArray(data);
     }
-    const item = currentDeck.pop(); setNeverDeck(currentDeck); setNeverText(item.text);
+    const { item, newDeck } = pickSmartItem(currentDeck);
+    setNeverDeck(newDeck);
+    setNeverText(item.text);
   };
 
+  // Ruleta (Smart Punishment)
   const spinRoulette = () => {
-    setRouletteStatus('spinning'); setPunishment(""); playSound('click');
-    let chambers = ['BULLET', 'RISK', 'RISK', 'RISK', 'LUCKY', 'LUCKY'];
-    setRouletteChambers(shuffleArray(chambers)); setCurrentChamberIdx(0);
-    setTimeout(() => setRouletteStatus('active'), 1000);
+    setRouletteStatus('spinning'); setPunishment(""); playSound('spin'); setShotsFired([]);
+    let chambers = Array(6).fill('empty');
+    let bullets = doubleBullet ? 2 : 1;
+    for(let i=0; i<bullets; i++) { let pos; do { pos = Math.floor(Math.random()*6); } while(chambers[pos] === 'bullet'); chambers[pos] = 'bullet'; }
+    setRouletteChambers(chambers); setCurrentChamberIdx(0);
+    setTimeout(() => setRouletteStatus('playing'), 1500);
   };
 
   const pullTrigger = () => {
-    if (rouletteStatus !== 'active') return;
-    const result = rouletteChambers[currentChamberIdx];
-    if (result === 'BULLET') {
-        playSound('bang'); setRouletteStatus('dead');
-        let deaths;
-        if (heatLevel === 'all') {
-            deaths = ROULETTE_DB;
-        } else {
-            deaths = ROULETTE_DB.filter(r => r.level === heatLevel);
-            if (deaths.length === 0) deaths = ROULETTE_DB.filter(r => r.level <= heatLevel);
-        }
-        setPunishment(deaths[Math.floor(Math.random() * deaths.length)]?.text || "Bebe todo el vaso.");
-    } else if (result === 'RISK') {
-        playSound('click'); setRouletteStatus('risk');
-        setPunishment("¡Casi! Quítate una prenda pequeña o bebe.");
-        prepareNextTurn();
-    } else {
-        playSound('click'); setRouletteStatus('safe');
-        setPunishment("¡Click! Estás a salvo.");
-        prepareNextTurn();
-    }
-  };
-  const prepareNextTurn = () => { if (currentChamberIdx < 5) setTimeout(() => { setRouletteStatus('active'); setCurrentChamberIdx(p => p+1); setPunishment(""); }, 2000); else setTimeout(() => setRouletteStatus('ready'), 2000); };
+    if (rouletteStatus !== 'playing') return;
+    setRouletteStatus('tension'); playSound('click');
+    setTimeout(() => {
+        const result = rouletteChambers[currentChamberIdx];
+        const newShots = [...shotsFired];
+        if (result === 'bullet') {
+            playSound('bang'); setRouletteStatus('dead'); newShots.push('bang'); setShotsFired(newShots);
+            
+            // Selección inteligente de castigo
+            let deaths;
+            if (heatLevel === 'all') {
+                // En modo caos, usar castigos acordes al calor actual o superior
+                const min = Math.max(1, currentSessionHeat - 1);
+                deaths = ROULETTE_DB.filter(r => r.level >= min);
+                if (deaths.length === 0) deaths = ROULETTE_DB;
+            } else {
+                deaths = ROULETTE_DB.filter(r => r.level <= heatLevel);
+            }
+            const chosen = deaths[Math.floor(Math.random() * deaths.length)];
+            setPunishment(chosen?.text || "Bebe todo el vaso.");
+            setCurrentSessionHeat(chosen?.level || 1); // El castigo define el nuevo calor
 
-  // --- RENDERS DE PANTALLAS ---
+        } else {
+            playSound('click'); setRouletteStatus('safe'); newShots.push('safe'); setShotsFired(newShots);
+            setPunishment("¡Salvado! Pasa el turno.");
+            setTimeout(() => { setRouletteStatus('playing'); setCurrentChamberIdx(p => (p+1)%6); }, 1500);
+        }
+    }, 1000);
+  };
+
+  // Renders (Sin cambios estructurales, solo usan las nuevas funciones)
   const renderHome = () => (
     <div className="flex flex-col h-full justify-between pt-12 pb-6 animate-fade-in">
       <div className="text-center space-y-6">
         <div className="relative inline-block"><div className="absolute inset-0 bg-pink-500 blur-2xl opacity-40 rounded-full animate-pulse"></div><Flame className="w-28 h-28 text-red-500 relative z-10 mx-auto" fill="currentColor" /></div>
         <div><h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 tracking-tight">INTIMOUS</h1><p className="text-gray-400 text-sm font-medium tracking-widest mt-2 uppercase opacity-80">Intimidad & Anonimato</p></div>
       </div>
-      <div className="space-y-6 px-8"><Button onClick={() => setScreen('audience')}><Play fill="currentColor" className="w-5 h-5" /> ENTRAR AL JUEGO</Button><div className="text-[10px] text-center text-gray-600 font-mono">v12.1 • COLORES ORIGINALES<br/><span className="opacity-50">by JTA</span></div></div>
+      <div className="space-y-6 px-8"><Button onClick={() => setScreen('audience')}><Play fill="currentColor" className="w-5 h-5" /> ENTRAR AL JUEGO</Button><div className="text-[10px] text-center text-gray-600 font-mono">v18.0 • SMART HEAT LOGIC<br/><span className="opacity-50">by JTA</span></div></div>
     </div>
   );
 
@@ -332,71 +410,13 @@ export default function App() {
     </div>
   );
 
-  const renderDiceGame = () => (
-    <div className="flex flex-col h-full bg-black/40 animate-fade-in relative">
-      <div className="flex items-center p-4 absolute top-0 w-full z-10"><button onClick={goBack} className="p-3 bg-gray-800/50 rounded-full backdrop-blur-md"><ArrowLeft className="text-white w-5 h-5" /></button><h2 className="ml-4 text-xl font-bold text-white drop-shadow-md">Dados Calientes</h2></div>
-      <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-8"><div className="w-full space-y-6 perspective-1000"><div className={`h-32 w-full rounded-3xl flex items-center justify-center bg-gradient-to-br from-pink-600 to-purple-900 shadow-[0_0_40px_rgba(236,72,153,0.25)] text-3xl font-black text-white border-t border-white/20 transition-all duration-150 ease-out transform ${isRolling ? 'rotate-x-12 scale-95 opacity-80 blur-[1px]' : 'rotate-x-0 scale-100'}`}>{dice1}</div><div className="text-center text-gray-500 font-bold text-xs tracking-[0.3em]">EN</div><div className={`h-32 w-full rounded-3xl flex items-center justify-center bg-gradient-to-br from-orange-600 to-red-900 shadow-[0_0_40px_rgba(234,88,12,0.25)] text-3xl font-black text-white border-t border-white/20 transition-all duration-150 ease-out transform ${isRolling ? '-rotate-x-12 scale-95 opacity-80 blur-[1px]' : 'rotate-x-0 scale-100'}`}>{dice2}</div></div></div>
-      <div className="p-6 pb-12"><Button onClick={rollDice} variant="primary">{isRolling ? '🎲 ...' : 'LANZAR'}</Button></div>
-    </div>
-  );
+  const renderDiceGame = () => (<div className="flex flex-col h-full bg-black/40 animate-fade-in relative"><div className="flex items-center p-4 absolute top-0 w-full z-10"><button onClick={goBack} className="p-3 bg-gray-800/50 rounded-full backdrop-blur-md"><ArrowLeft className="text-white w-5 h-5" /></button><h2 className="ml-4 text-xl font-bold text-white drop-shadow-md">Dados Calientes</h2></div><div className="flex-1 flex flex-col items-center justify-center p-6 space-y-8"><div className="w-full space-y-6 perspective-1000"><div className={`h-32 w-full rounded-3xl flex items-center justify-center bg-gradient-to-br from-pink-600 to-purple-900 shadow-[0_0_40px_rgba(236,72,153,0.25)] text-3xl font-black text-white border-t border-white/20 transition-all duration-150 ease-out transform ${isRolling ? 'rotate-x-12 scale-95 opacity-80 blur-[1px]' : 'rotate-x-0 scale-100'}`}>{dice1}</div><div className="text-center text-gray-500 font-bold text-xs tracking-[0.3em]">EN</div><div className={`h-32 w-full rounded-3xl flex items-center justify-center bg-gradient-to-br from-orange-600 to-red-900 shadow-[0_0_40px_rgba(234,88,12,0.25)] text-3xl font-black text-white border-t border-white/20 transition-all duration-150 ease-out transform ${isRolling ? '-rotate-x-12 scale-95 opacity-80 blur-[1px]' : 'rotate-x-0 scale-100'}`}>{dice2}</div></div></div><div className="p-6 pb-12"><Button onClick={rollDice} variant="primary">{isRolling ? '🎲 ...' : 'LANZAR'}</Button></div></div>);
+  const renderCardGame = () => (<div className="flex flex-col h-full animate-fade-in"><div className="flex items-center p-4"><button onClick={goBack} className="p-3 bg-gray-800/50 rounded-full"><ArrowLeft className="text-white w-5 h-5" /></button><h2 className="ml-4 text-xl font-bold text-white">Verdad o Reto</h2></div><div className="flex-1 flex items-center justify-center p-6">{!currentCard ? (<div onClick={drawCard} className="w-full h-96 bg-gray-800/50 rounded-3xl border-2 border-dashed border-gray-700 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-800 transition-colors active:scale-95"><Zap className="text-gray-600 w-20 h-20 mb-6" /><p className="text-gray-400 font-bold text-xl">Sacar Carta</p><span className="text-xs text-gray-500 mt-2 font-mono">Nivel {heatLevel === 'all' ? 'CAOS' : heatLevel}</span></div>) : (<div className="w-full h-auto min-h-[450px] relative animate-flip-in"><div className={`w-full h-full rounded-3xl p-8 flex flex-col items-center justify-center text-center shadow-2xl border-t border-white/10 ${currentCard.type === 'truth' ? 'bg-gradient-to-br from-blue-600 to-indigo-900' : 'bg-gradient-to-br from-red-600 to-pink-900'}`}><span className="text-xs font-black uppercase tracking-widest text-white/70 mb-8 bg-black/30 px-4 py-1.5 rounded-full">{currentCard.type === 'truth' ? 'VERDAD' : 'RETO'}</span><h3 className="text-2xl md:text-3xl font-bold text-white leading-tight drop-shadow-lg mb-4">{currentCard.text}</h3>{currentCard.time && (<div className="mb-6 w-full"><div className={`text-5xl font-black font-mono mb-4 ${cardTimer <= 5 ? 'text-red-500 animate-pulse' : 'text-white'}`}>{cardTimer}s</div><Button onClick={() => setIsCardTimerRunning(!isCardTimerRunning)} variant={isCardTimerRunning ? "secondary" : "green"} className="py-2 text-sm">{isCardTimerRunning ? <><Pause size={16}/> PAUSAR</> : <><Play size={16}/> INICIAR</>}</Button></div>)}<div className="mt-auto flex gap-1 justify-center mb-4">{[...Array(currentCard.level)].map((_,i)=><Flame key={i} className="w-4 h-4 text-orange-500"/>)}</div><button onClick={drawCard} className="w-full px-8 py-3 bg-white/10 backdrop-blur-md rounded-full text-white text-sm font-bold hover:bg-white/20 border border-white/10 transition-all active:scale-95">SIGUIENTE</button></div></div>)}</div></div>);
+  const renderKamaGame = () => (<div className="flex flex-col h-full animate-fade-in bg-purple-950/20"><div className="flex items-center p-4"><button onClick={goBack} className="p-3 bg-gray-800/50 rounded-full"><ArrowLeft className="text-white w-5 h-5" /></button><h2 className="ml-4 text-xl font-bold text-white">Kamasutra</h2></div><div className="flex-1 flex items-center justify-center p-6">{!currentPos ? (<div onClick={drawPosition} className="w-full h-96 bg-purple-900/20 rounded-3xl border-2 border-dashed border-purple-500/50 flex flex-col items-center justify-center cursor-pointer hover:bg-purple-900/30 transition-colors active:scale-95"><Layers className="text-purple-400 w-20 h-20 mb-6" /><p className="text-purple-200 font-bold text-xl">Sugerir Posición</p><span className="text-xs text-purple-400 mt-2 font-mono">Nivel {heatLevel === 'all' ? 'ALEATORIO' : heatLevel} • {kamaDeck.length} restantes</span></div>) : (<div className="w-full h-[450px] relative animate-flip-in"><div className="w-full h-full rounded-3xl p-8 flex flex-col items-center justify-center text-center shadow-2xl border-t border-white/10 bg-gradient-to-br from-purple-900 to-indigo-900"><div className="flex gap-1 mb-4">{[...Array(currentPos.level)].map((_, i) => (<Flame key={i} className="w-5 h-5 text-orange-500 fill-orange-500 animate-pulse" />))}</div><div className="w-48 h-48 bg-white/10 rounded-full flex items-center justify-center mb-6 overflow-hidden border-4 border-purple-500/30 shadow-inner"><img src={`/${currentPos.img}`} onError={(e) => e.target.style.display='none'} alt={currentPos.name} className="w-full h-full object-contain p-2 opacity-90" /><ImageIcon className="text-purple-500/50 w-16 h-16 absolute -z-10" /></div><h3 className="text-3xl font-black text-white leading-tight drop-shadow-lg mb-4">{currentPos.name}</h3><p className="text-purple-200 text-lg leading-relaxed">{currentPos.desc}</p><button onClick={drawPosition} className="mt-auto w-full py-3 bg-white/10 backdrop-blur-md rounded-xl text-white font-bold hover:bg-white/20 border border-white/10 transition-all">SIGUIENTE</button></div></div>)}</div></div>);
+  const renderTimerGame = () => (<div className="flex flex-col h-full animate-fade-in bg-emerald-950/20"><div className="flex items-center p-4"><button onClick={goBack} className="p-3 bg-gray-800/50 rounded-full"><ArrowLeft className="text-white w-5 h-5" /></button><h2 className="ml-4 text-xl font-bold text-white">Rally</h2></div><div className="flex-1 flex flex-col items-center justify-start p-6 pt-2"><div className="w-full flex items-center justify-between mb-4 bg-gray-900/50 p-4 rounded-2xl"><div className="flex items-center gap-2"><Timer className="text-emerald-400 w-6 h-6" /><span className={`text-3xl font-mono font-black ${timer <= 5 ? 'text-red-500 animate-pulse' : 'text-white'}`}>{timer}s</span></div></div><div className="w-full flex-1 flex items-center justify-center relative">{!currentPos ? (<div onClick={() => {if(!isTimerActive) drawPosition(); setIsTimerActive(!isTimerActive)}} className="w-full h-full bg-emerald-900/10 rounded-3xl border-2 border-dashed border-emerald-500/30 flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-900/20 transition-all"><Play className="text-emerald-500 w-20 h-20 mb-4 ml-2" /><p className="text-emerald-200 font-bold text-xl">INICIAR RALLY</p><span className="text-xs text-emerald-500 mt-2 font-mono">Nivel {heatLevel === 'all' ? 'ALEATORIO' : heatLevel}</span></div>) : (<div className="w-full h-full rounded-3xl p-6 flex flex-col items-center justify-center text-center shadow-2xl border-t border-white/10 bg-gradient-to-br from-emerald-900 to-teal-900 animate-flip-in relative overflow-hidden"><div className="absolute bottom-0 left-0 h-2 bg-emerald-500 transition-all duration-1000 ease-linear" style={{ width: `${(timer/60)*100}%` }}></div>{currentPos.img ? (<img src={currentPos.img} alt={currentPos.name} className="w-40 h-40 object-contain mb-4 opacity-90" />) : null}<h3 className="text-3xl font-black text-white leading-tight drop-shadow-lg mb-4">{currentPos.name}</h3><p className="text-emerald-100 text-lg leading-relaxed">{currentPos.desc}</p></div>)}</div></div><div className="p-6 pb-10 flex gap-4"><Button onClick={() => setIsTimerActive(!isTimerActive)} variant={isTimerActive ? "secondary" : "green"}>{isTimerActive ? "PAUSAR" : "CONTINUAR"}</Button><button onClick={() => {drawPosition(); setTimer(60)}} className="bg-gray-800 p-4 rounded-2xl text-white border border-gray-700 hover:bg-gray-700"><RotateCcw className="w-6 h-6" /></button></div></div>);
+  const renderNeverGame = () => (<div className="flex flex-col h-full animate-fade-in bg-blue-950/20"><div className="flex items-center p-4"><button onClick={goBack} className="p-3 bg-gray-800/50 rounded-full"><ArrowLeft className="text-white w-5 h-5" /></button><h2 className="ml-4 text-xl font-bold text-white">Yo Nunca</h2></div><div className="flex-1 flex flex-col items-center justify-center p-6 space-y-6"><div className="w-full h-80 bg-gradient-to-b from-blue-800 to-blue-950 rounded-3xl p-8 flex flex-col items-center justify-center text-center border border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.2)]"><Beer className="w-12 h-12 text-blue-400 mb-6 opacity-80" /><h3 className="text-2xl font-bold text-white leading-relaxed">"{neverText}"</h3></div><p className="text-gray-400 text-sm text-center px-8">Si lo has hecho, <span className="text-blue-400 font-bold">cumple la penitencia</span> (beber o prenda).</p></div><div className="p-6 pb-10"><Button onClick={nextNever} className="bg-blue-600 hover:bg-blue-700 border-blue-400">SIGUIENTE</Button></div></div>);
+  const renderRoulette = () => (<div className={`flex flex-col h-full animate-fade-in transition-colors duration-500 ${rouletteStatus === 'dead' ? 'bg-red-950' : 'bg-red-950/20'}`}><div className="flex items-center p-4 justify-between"><div className="flex items-center"><button onClick={goBack} className="p-3 bg-gray-800/50 rounded-full"><ArrowLeft className="text-white w-5 h-5" /></button><h2 className="ml-4 text-xl font-bold text-white">Ruleta</h2></div>{rouletteStatus === 'ready' && (<button onClick={() => setDoubleBullet(!doubleBullet)} className={`px-3 py-1 rounded-full text-xs font-bold border ${doubleBullet ? 'bg-red-600 border-red-500 text-white' : 'bg-gray-800 border-gray-600 text-gray-400'}`}>{doubleBullet ? '2 BALAS 💀' : '1 BALA'}</button>)}</div><div className="flex-1 flex flex-col items-center justify-center p-6 relative"><div className={`relative w-64 h-64 mb-6 ${rouletteStatus === 'dead' ? 'animate-shake' : ''} ${rouletteStatus === 'tension' ? 'animate-pulse' : ''}`}><div className={`w-full h-full rounded-full border-8 border-gray-800 flex items-center justify-center relative transition-transform duration-1000 ease-out ${rouletteStatus === 'spinning' ? 'rotate-[1080deg]' : ''}`} style={{ transform: rouletteStatus === 'playing' || rouletteStatus === 'tension' ? `rotate(${shotsFired.length * 60}deg)` : '' }}>{[0, 60, 120, 180, 240, 300].map((deg, index) => { const isShot = index < shotsFired.length; return (<div key={index} className={`absolute w-12 h-12 rounded-full top-2 left-1/2 -translate-x-1/2 -translate-y-1/2 origin-[50%_120px] border-2 border-gray-700 flex items-center justify-center ${isShot ? 'bg-gray-900 opacity-30' : 'bg-gray-800 shadow-[0_0_15px_rgba(255,255,255,0.1)]'} ${index === shotsFired.length && (rouletteStatus === 'playing' || rouletteStatus === 'tension') ? 'border-yellow-500 shadow-[0_0_20px_yellow]' : ''}`} style={{ transform: `rotate(${deg}deg) translate(0, -110px)` }}>{isShot && <div className="w-3 h-3 rounded-full bg-black"></div>}</div>); })}<div className="absolute w-24 h-24 bg-gray-900 rounded-full border-4 border-gray-700 flex items-center justify-center shadow-inner z-10">{rouletteStatus === 'dead' ? <Skull className="text-red-500 w-14 h-14 animate-bounce"/> : rouletteStatus === 'tension' ? <div className="text-yellow-500 font-black text-4xl animate-pulse">!</div> : <Crosshair className="text-gray-600 w-12 h-12"/>}</div></div><div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4 w-4 h-6 bg-red-600 rounded-b-lg shadow-[0_0_15px_red] z-0"></div></div><div className={`h-40 flex items-center justify-center text-center px-4 w-full bg-black/40 rounded-xl border ${rouletteStatus === 'dead' ? 'border-red-500 bg-red-900/20' : 'border-white/5'}`}>{rouletteStatus === 'ready' && <div className="space-y-2"><p className="text-gray-300 font-bold text-lg">¿Quién empieza?</p><p className="text-gray-500 text-sm">La bala se queda en su lugar. <br/>La probabilidad de morir aumenta en cada turno.</p></div>}{rouletteStatus === 'spinning' && <p className="text-yellow-500 font-bold animate-pulse text-xl tracking-widest">CARGANDO...</p>}{(rouletteStatus === 'playing' || rouletteStatus === 'tension') && (<div className="space-y-1"><p className="text-white font-bold text-lg">Pasa el celular.</p><p className="text-xs text-gray-400 uppercase tracking-widest mb-2">Tu turno de apretar</p></div>)}{rouletteStatus === 'dead' && (<div className="animate-bounce"><p className="text-red-600 font-black text-5xl mb-2 tracking-tighter">¡BANG!</p><p className="text-white text-md bg-red-900/80 p-3 rounded-lg border border-red-500 shadow-[0_0_20px_red]">{punishment}</p></div>)}{rouletteStatus === 'safe' && (<div className="animate-pulse"><ShieldCheck className="w-10 h-10 text-green-500 mx-auto mb-2"/><p className="text-green-400 font-black text-3xl tracking-widest">CLICK</p><p className="text-gray-400 text-xs mt-1">Estás a salvo... por ahora.</p></div>)}</div></div><div className="p-6 pb-10 space-y-4">{rouletteStatus === 'ready' && <Button onClick={spinCylinder} variant="secondary">GIRAR CILINDRO</Button>}{(rouletteStatus === 'playing' || rouletteStatus === 'tension') && <Button onClick={pullTrigger} disabled={rouletteStatus === 'tension'} variant="danger" className={rouletteStatus === 'tension' ? 'opacity-50' : ''}>APRETAR GATILLO</Button>}{rouletteStatus === 'dead' && <Button onClick={() => setRouletteStatus('ready')} variant="secondary">REINICIAR JUEGO</Button>}{rouletteStatus === 'safe' && <Button onClick={() => setRouletteStatus('playing')} variant="primary">PASAR AL SIGUIENTE</Button>}</div></div>);
 
-  const renderCardGame = () => (
-    <div className="flex flex-col h-full animate-fade-in">
-      <div className="flex items-center p-4"><button onClick={goBack} className="p-3 bg-gray-800/50 rounded-full"><ArrowLeft className="text-white w-5 h-5" /></button><h2 className="ml-4 text-xl font-bold text-white">Verdad o Reto</h2></div>
-      <div className="flex-1 flex items-center justify-center p-6">{!currentCard ? (<div onClick={drawCard} className="w-full h-96 bg-gray-800/50 rounded-3xl border-2 border-dashed border-gray-700 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-800 transition-colors active:scale-95"><Zap className="text-gray-600 w-20 h-20 mb-6" /><p className="text-gray-400 font-bold text-xl">Sacar Carta</p><span className="text-xs text-gray-500 mt-2 font-mono">Nivel {heatLevel === 'all' ? 'ALEATORIO' : heatLevel}</span></div>) : (<div className="w-full h-[450px] relative animate-flip-in"><div className={`w-full h-full rounded-3xl p-8 flex flex-col items-center justify-center text-center shadow-2xl border-t border-white/10 ${currentCard.type === 'truth' ? 'bg-gradient-to-br from-blue-600 to-indigo-900' : 'bg-gradient-to-br from-red-600 to-pink-900'}`}><span className="text-xs font-black uppercase tracking-widest text-white/70 mb-8 bg-black/30 px-4 py-1.5 rounded-full">{currentCard.type === 'truth' ? 'VERDAD' : 'RETO'}</span><h3 className="text-2xl md:text-3xl font-bold text-white leading-tight drop-shadow-lg">{currentCard.text}</h3><button onClick={drawCard} className="mt-12 px-8 py-3 bg-white/10 backdrop-blur-md rounded-full text-white text-sm font-bold hover:bg-white/20 border border-white/10 transition-all active:scale-95">SIGUIENTE</button></div></div>)}</div>
-    </div>
-  );
-
-  const renderKamaGame = () => (
-    <div className="flex flex-col h-full animate-fade-in bg-purple-950/20">
-      <div className="flex items-center p-4"><button onClick={goBack} className="p-3 bg-gray-800/50 rounded-full"><ArrowLeft className="text-white w-5 h-5" /></button><h2 className="ml-4 text-xl font-bold text-white">Kamasutra</h2></div>
-      <div className="flex-1 flex items-center justify-center p-6">{!currentPos ? (<div onClick={drawPosition} className="w-full h-96 bg-purple-900/20 rounded-3xl border-2 border-dashed border-purple-500/50 flex flex-col items-center justify-center cursor-pointer hover:bg-purple-900/30 transition-colors active:scale-95"><Layers className="text-purple-400 w-20 h-20 mb-6" /><p className="text-purple-200 font-bold text-xl">Sugerir Posición</p><span className="text-xs text-purple-400 mt-2 font-mono">Nivel {heatLevel === 'all' ? 'ALEATORIO' : heatLevel} • {kamaDeck.length} restantes</span></div>) : (<div className="w-full h-[450px] relative animate-flip-in"><div className="w-full h-full rounded-3xl p-8 flex flex-col items-center justify-center text-center shadow-2xl border-t border-white/10 bg-gradient-to-br from-purple-900 to-indigo-900">
-      <div className="flex gap-1 mb-4">{[...Array(currentPos.level)].map((_, i) => (<Flame key={i} className="w-5 h-5 text-orange-500 fill-orange-500 animate-pulse" />))}</div>
-      
-      {/* IMAGEN SIN INVERTIR */}
-      <div className="w-48 h-48 bg-white/10 rounded-full flex items-center justify-center mb-6 overflow-hidden border-4 border-purple-500/30 shadow-inner">
-         <img src={`/${currentPos.img}`} onError={(e) => e.target.style.display='none'} alt={currentPos.name} className="w-full h-full object-contain p-2 opacity-90" />
-         <ImageIcon className="text-purple-500/50 w-16 h-16 absolute -z-10" />
-      </div>
-
-      <h3 className="text-3xl font-black text-white leading-tight drop-shadow-lg mb-4">{currentPos.name}</h3><p className="text-purple-200 text-lg leading-relaxed">{currentPos.desc}</p><button onClick={drawPosition} className="mt-auto w-full py-3 bg-white/10 backdrop-blur-md rounded-xl text-white font-bold hover:bg-white/20 border border-white/10 transition-all">SIGUIENTE</button></div></div>)}</div>
-    </div>
-  );
-
-  const renderTimerGame = () => (
-    <div className="flex flex-col h-full animate-fade-in bg-emerald-950/20">
-      <div className="flex items-center p-4"><button onClick={goBack} className="p-3 bg-gray-800/50 rounded-full"><ArrowLeft className="text-white w-5 h-5" /></button><h2 className="ml-4 text-xl font-bold text-white">Rally</h2></div>
-      <div className="flex-1 flex flex-col items-center justify-start p-6 pt-2">
-        <div className="w-full flex items-center justify-between mb-4 bg-gray-900/50 p-4 rounded-2xl"><div className="flex items-center gap-2"><Timer className="text-emerald-400 w-6 h-6" /><span className={`text-3xl font-mono font-black ${timer <= 5 ? 'text-red-500 animate-pulse' : 'text-white'}`}>{timer}s</span></div></div>
-        <div className="w-full flex-1 flex items-center justify-center relative">{!currentPos ? (<div onClick={() => {if(!isTimerActive) drawPosition(); setIsTimerActive(!isTimerActive)}} className="w-full h-full bg-emerald-900/10 rounded-3xl border-2 border-dashed border-emerald-500/30 flex flex-col items-center justify-center cursor-pointer hover:bg-emerald-900/20 transition-all"><Play className="text-emerald-500 w-20 h-20 mb-4 ml-2" /><p className="text-emerald-200 font-bold text-xl">INICIAR RALLY</p><span className="text-xs text-emerald-500 mt-2 font-mono">Nivel {heatLevel === 'all' ? 'ALEATORIO' : heatLevel}</span></div>) : (<div className="w-full h-full rounded-3xl p-6 flex flex-col items-center justify-center text-center shadow-2xl border-t border-white/10 bg-gradient-to-br from-emerald-900 to-teal-900 animate-flip-in relative overflow-hidden">
-        <div className="absolute bottom-0 left-0 h-2 bg-emerald-500 transition-all duration-1000 ease-linear" style={{ width: `${(timer/60)*100}%` }}></div>
-        
-        {/* IMAGEN SIN INVERTIR */}
-        {currentPos.img ? (<img src={currentPos.img} alt={currentPos.name} className="w-40 h-40 object-contain mb-4 opacity-90" />) : null}
-        
-        <h3 className="text-3xl font-black text-white leading-tight drop-shadow-lg mb-4">{currentPos.name}</h3><p className="text-emerald-100 text-lg leading-relaxed">{currentPos.desc}</p></div>)}</div>
-      </div>
-      <div className="p-6 pb-10 flex gap-4"><Button onClick={() => setIsTimerActive(!isTimerActive)} variant={isTimerActive ? "secondary" : "green"}>{isTimerActive ? "PAUSAR" : "CONTINUAR"}</Button><button onClick={() => {drawPosition(); setTimer(60)}} className="bg-gray-800 p-4 rounded-2xl text-white border border-gray-700 hover:bg-gray-700"><RotateCcw className="w-6 h-6" /></button></div>
-    </div>
-  );
-
-  const renderNeverGame = () => (
-    <div className="flex flex-col h-full animate-fade-in bg-blue-950/20">
-      <div className="flex items-center p-4"><button onClick={goBack} className="p-3 bg-gray-800/50 rounded-full"><ArrowLeft className="text-white w-5 h-5" /></button><h2 className="ml-4 text-xl font-bold text-white">Yo Nunca</h2></div>
-      <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-6"><div className="w-full h-80 bg-gradient-to-b from-blue-800 to-blue-950 rounded-3xl p-8 flex flex-col items-center justify-center text-center border border-blue-500/30 shadow-[0_0_30px_rgba(59,130,246,0.2)]"><Beer className="w-12 h-12 text-blue-400 mb-6 opacity-80" /><h3 className="text-2xl font-bold text-white leading-relaxed">"{neverText}"</h3></div><p className="text-gray-400 text-sm text-center px-8">Si lo has hecho, <span className="text-blue-400 font-bold">cumple la penitencia</span> (beber o prenda).</p></div>
-      <div className="p-6 pb-10"><Button onClick={nextNever} className="bg-blue-600 hover:bg-blue-700 border-blue-400">SIGUIENTE</Button></div>
-    </div>
-  );
-
-  const renderRoulette = () => (
-    <div className="flex flex-col h-full animate-fade-in bg-red-950/20">
-      <div className="flex items-center p-4"><button onClick={goBack} className="p-3 bg-gray-800/50 rounded-full"><ArrowLeft className="text-white w-5 h-5" /></button><h2 className="ml-4 text-xl font-bold text-white">Ruleta</h2></div>
-      <div className="flex-1 flex flex-col items-center justify-center p-6 relative"><div className="relative w-64 h-64 mb-6"><div className={`w-full h-full rounded-full border-8 border-gray-800 flex items-center justify-center relative transition-transform duration-1000 ${rouletteStatus === 'spinning' ? 'rotate-[720deg]' : ''}`}>{[0, 60, 120, 180, 240, 300].map((deg, index) => (<div key={index} className={`absolute w-10 h-10 rounded-full top-2 left-1/2 -translate-x-1/2 -translate-y-1/2 origin-[50%_120px] border-2 border-gray-700 ${index === currentChamberIdx && rouletteStatus !== 'spinning' ? 'bg-yellow-500 shadow-[0_0_20px_yellow] border-yellow-300' : 'bg-gray-900'}`} style={{ transform: `rotate(${deg}deg) translate(0, -110px)` }}></div>))}<div className="absolute w-24 h-24 bg-gray-800 rounded-full border-4 border-gray-700 flex items-center justify-center shadow-inner">{rouletteStatus === 'dead' ? <Skull className="text-red-500 w-12 h-12 animate-bounce"/> : <Bomb className="text-gray-600 w-10 h-10"/>}</div></div></div><div className="h-36 flex items-center justify-center text-center px-4 w-full bg-black/20 rounded-xl border border-white/5">{rouletteStatus === 'ready' && <p className="text-gray-400">Nivel {heatLevel === 'all' ? 'ALEATORIO' : heatLevel} de Peligro.</p>}{rouletteStatus === 'spinning' && <p className="text-yellow-500 font-bold animate-pulse text-xl">GIRANDO...</p>}{rouletteStatus === 'active' && <p className="text-white font-bold text-lg animate-pulse">Tu turno.</p>}{rouletteStatus === 'safe' && <p className="text-green-400 font-bold text-xl">{punishment}</p>}{rouletteStatus === 'risk' && <p className="text-orange-400 font-bold text-xl">{punishment}</p>}{rouletteStatus === 'dead' && (<div className="animate-bounce"><p className="text-red-600 font-black text-4xl mb-2">¡BANG!</p><p className="text-white text-md bg-red-900/50 p-2 rounded-lg border border-red-500">{punishment}</p></div>)}</div></div>
-      <div className="p-6 pb-10 space-y-4">{rouletteStatus === 'ready' || rouletteStatus === 'dead' ? (<Button onClick={spinRoulette} variant="secondary">GIRAR CILINDRO</Button>) : (<Button onClick={pullTrigger} disabled={rouletteStatus !== 'active'} variant="danger">APRETAR GATILLO</Button>)}</div>
-    </div>
-  );
-
-  // --- MAIN RENDER ---
   return (
     <div className="w-full h-screen bg-black text-slate-200 font-sans overflow-hidden flex justify-center selection:bg-pink-500/30">
       <div className="w-full max-w-md h-full bg-[#0a0a0a] relative flex flex-col shadow-2xl border-x border-gray-900">
@@ -410,7 +430,16 @@ export default function App() {
         {screen === 'play-never' && renderNeverGame()}
         {screen === 'play-roulette' && renderRoulette()}
       </div>
-      <style>{`@keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } } .animate-fade-in { animation: fade-in 0.4s ease-out forwards; } @keyframes flip-in { from { transform: rotateY(90deg) scale(0.9); opacity: 0; } to { transform: rotateY(0) scale(1); opacity: 1; } } .animate-flip-in { animation: flip-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); } .perspective-1000 { perspective: 1000px; } .rotate-x-12 { transform: rotateX(12deg); } .-rotate-x-12 { transform: rotateX(-12deg); }`}</style>
+      <style>{`
+        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
+        @keyframes flip-in { from { transform: rotateY(90deg) scale(0.9); opacity: 0; } to { transform: rotateY(0) scale(1); opacity: 1; } }
+        .animate-flip-in { animation: flip-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .perspective-1000 { perspective: 1000px; }
+        .rotate-x-12 { transform: rotateX(12deg); }
+        .-rotate-x-12 { transform: rotateX(-12deg); }
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } } .animate-shake { animation: shake 0.5s; }
+      `}</style>
     </div>
   );
 }
