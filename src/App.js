@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Dice5, Flame, Heart, Beer, Zap, Moon, Skull, Bomb, Layers, Timer, Pause, RotateCcw, Play, ArrowLeft, Image as ImageIcon, AlertTriangle, ShieldCheck, Shuffle, Crosshair } from 'lucide-react';
 
 // --- CONFIGURACIÓN DE AUDIENCIAS ---
@@ -41,24 +41,24 @@ const shuffleArray = (array) => {
   return newArray;
 };
 
-// --- BASE DE DATOS EXTENDIDA ---
-
+// --- BASE DE DATOS EXTENDIDA Y CORREGIDA ---
 const CARDS_DB = [
   // NIVEL 1
   { level: 1, type: 'truth', text: '¿Qué ropa interior llevas puesta hoy? Descríbela.' },
   { level: 1, type: 'truth', text: '¿Cuál es la parte de mi cuerpo que más te gusta mirar?' },
   { level: 1, type: 'dare', text: 'Bésame el cuello suavemente.', time: 30 },
-  { level: 1, type: 'dare', text: 'Dame un masaje en los hombros.', time: 60 },
   { level: 1, type: 'dare', text: 'Muerde mi labio inferior suavemente.' },
+  { level: 1, type: 'truth', text: '¿Qué pensaste la primera vez que me viste desnudo/a?' },
   
   // NIVEL 2
   { level: 2, type: 'truth', text: '¿Te has tocado pensando en mí alguna vez?' },
   { level: 2, type: 'dare', text: 'Quítate una prenda (que no sea zapatos o accesorios).' },
-  { level: 2, type: 'dare', text: 'Pasa tu mano por dentro de mi ropa interior sin tocar "eso".' },
+  { level: 2, type: 'dare', text: 'Pasa tu mano por dentro de mi ropa interior sin tocar nada.' },
   { level: 2, type: 'dare', text: 'Bésame la parte interna del muslo.' },
   { level: 2, type: 'dare', text: 'Hazme un baile sensual (con ropa).', time: 60 },
   
-  // NIVEL 3
+  // NIVEL 3 (CORREGIDO: Masajes más picantes)
+  { level: 3, type: 'dare', text: 'Dame un masaje sensual en los muslos y entrepierna (sin tocar genitales).', time: 60 },
   { level: 3, type: 'dare', text: 'Quítate la ropa interior y entrégamela.' },
   { level: 3, type: 'dare', text: 'Usa un cubo de hielo para recorrer todo mi cuerpo.', time: 60 },
   { level: 3, type: 'dare', text: 'Véndate los ojos y déjate hacer lo que yo quiera.', time: 120 },
@@ -71,6 +71,7 @@ const CARDS_DB = [
   { level: 4, type: 'dare', text: 'Escúpeme en la boca (o donde prefieras) suavemente.' },
   { level: 4, type: 'dare', text: 'Lame mis genitales pero NO permitas que llegue al orgasmo (Edging).', time: 180 },
   { level: 4, type: 'dare', text: 'Chupa mis dedos del pie apasionadamente.', time: 60 },
+  { level: 4, type: 'dare', text: 'Mastúrbate mirándome a los ojos.', time: 60 },
   
   // NIVEL 5
   { level: 5, type: 'dare', text: 'Penetración rápida: ¡Solo tienen este tiempo!', time: 30 },
@@ -83,17 +84,17 @@ const CARDS_DB = [
 ];
 
 const DICE_ACTIONS = [
-  { text: 'Besar', level: 1 }, { text: 'Acariciar', level: 1 }, { text: 'Soplar', level: 1 }, { text: 'Susurrar', level: 1 },
-  { text: 'Lamer', level: 2 }, { text: 'Morder', level: 2 }, { text: 'Chupar', level: 2 }, { text: 'Apretar', level: 2 },
-  { text: 'Nalguear', level: 3 }, { text: 'Masajear con aceite', level: 3 }, { text: 'Vibrar en', level: 3 },
-  { text: 'Escupir', level: 4 }, { text: 'Pellizcar', level: 4 }, { text: 'Dominar', level: 4 }, { text: 'Pies en', level: 4 },
-  { text: 'Penetrar', level: 5 }, { text: 'Orgasmo en', level: 5 }, { text: 'Garganta profunda', level: 5 }, { text: 'Follar', level: 5 }
+  { text: 'Besar', level: 1 }, { text: 'Acariciar', level: 1 }, { text: 'Soplar', level: 1 },
+  { text: 'Lamer', level: 2 }, { text: 'Morder', level: 2 }, { text: 'Chupar', level: 2 },
+  { text: 'Nalguear', level: 3 }, { text: 'Masajear con aceite', level: 3 },
+  { text: 'Escupir', level: 4 }, { text: 'Dominar', level: 4 }, { text: 'Pies en', level: 4 },
+  { text: 'Penetrar', level: 5 }, { text: 'Orgasmo en', level: 5 }, { text: 'Garganta profunda', level: 5 }
 ];
 const DICE_BODYPARTS = [
-  { text: 'Cuello', level: 1 }, { text: 'Oreja', level: 1 }, { text: 'Manos', level: 1 }, { text: 'Labios', level: 1 },
-  { text: 'Pezones', level: 2 }, { text: 'Muslos', level: 2 }, { text: 'Ombligo', level: 2 }, { text: 'Espalda Baja', level: 2 },
+  { text: 'Cuello', level: 1 }, { text: 'Oreja', level: 1 }, { text: 'Manos', level: 1 },
+  { text: 'Pezones', level: 2 }, { text: 'Muslos', level: 2 }, { text: 'Espalda Baja', level: 2 },
   { text: 'Genitales', level: 3 }, { text: 'Trasero', level: 3 }, { text: 'Perineo', level: 3 },
-  { text: 'Pies', level: 4 }, { text: 'Axilas', level: 4 }, { text: 'Garganta', level: 4 }, { text: 'Ano', level: 4 },
+  { text: 'Pies', level: 4 }, { text: 'Garganta', level: 4 }, { text: 'Ano', level: 4 },
   { text: 'Donde quieras', level: 5 }, { text: 'Boca (Oral)', level: 5 }, { text: 'Adentro', level: 5 }
 ];
 
@@ -102,20 +103,12 @@ const KAMA_POSITIONS = [
   { name: "Loto", level: 1, desc: "Sentados frente a frente.", img: "lotus.png" },
   { name: "Misionero", level: 2, desc: "Clásico y romántico.", img: "missionary.png" },
   { name: "Perrito", level: 2, desc: "Desde atrás, control total.", img: "doggy.png" },
-  { name: "La Silla", level: 1, desc: "Él sentado, ella encima.", img: "chair.png" },
-  { name: "La Fusión", level: 1, desc: "Piernas entrelazadas.", img: "fusion.png" },
   { name: "Vaquera", level: 3, desc: "Ella arriba controla.", img: "cowgirl.png" },
   { name: "El 69", level: 3, desc: "Oral mutuo.", img: "69.png" },
-  { name: "Piernas al Hombro", level: 3, desc: "Profundidad máxima.", img: "legs_up.png" },
-  { name: "Vaquera Invertida", level: 3, desc: "Ella arriba de espaldas.", img: "rev_cowgirl.png" },
   { name: "El Yunque", level: 4, desc: "Pelvis arriba, piernas atrás.", img: "anvil.png" },
   { name: "La Carretilla", level: 4, desc: "De pie, sosteniendo piernas.", img: "wheelbarrow.png" },
-  { name: "Cara a Cara", level: 4, desc: "Sentados, penetración profunda.", img: "chair_sex.png" },
   { name: "Anal (Cuchara)", level: 5, desc: "Acceso trasero suave.", img: "anal_spoon.png" },
   { name: "Garganta Profunda", level: 5, desc: "Posición para oral extremo.", img: "deep.png" },
-  { name: "69 de Pie", level: 5, desc: "Acrobacia oral total.", img: "standing_69.png" },
-  { name: "La Araña", level: 5, desc: "Entrelazados complejos.", img: "spider.png" },
-  { name: "El Helicóptero", level: 5, desc: "Girando sobre el pene.", img: "helicopter.png" }
 ];
 
 const ROULETTE_DB = [
@@ -123,8 +116,7 @@ const ROULETTE_DB = [
   { text: "Quítate la camisa.", level: 2 }, { text: "Nalgada seca.", level: 2 },
   { text: "Quítate ropa interior.", level: 3 }, { text: "Oral 1 minuto.", level: 3 },
   { text: "Chupar dedos del pie.", level: 4 }, { text: "Azotes con cinturón.", level: 4 },
-  { text: "Penetración anal (o intento).", level: 5 }, { text: "Tragar (Cumswallow).", level: 5 },
-  { text: "Striptease integral ya.", level: 4 }, { text: "Hielo en genitales.", level: 3 }
+  { text: "Penetración anal (o intento).", level: 5 }, { text: "Tragar (Cumswallow).", level: 5 }
 ];
 
 const NEVER_DATA = [
@@ -133,9 +125,7 @@ const NEVER_DATA = [
   { text: "Yo nunca he tenido sexo en un lugar público.", level: 3 },
   { text: "Yo nunca he tenido un fetiche de pies.", level: 4 },
   { text: "Yo nunca he participado en una orgía.", level: 5 },
-  { text: "Yo nunca he probado el sabor de mi propio fluido.", level: 5 },
-  { text: "Yo nunca me he grabado teniendo sexo.", level: 4 },
-  { text: "Yo nunca he usado comida en el sexo.", level: 3 }
+  { text: "Yo nunca he probado el sabor de mi propio fluido.", level: 5 }
 ];
 
 // --- COMPONENTES UI ---
@@ -153,11 +143,7 @@ const Button = ({ children, onClick, className = "", variant = "primary", disabl
 const HeatSelector = ({ currentLevel, setLevel }) => (
   <div className="grid grid-cols-6 gap-1 bg-gray-900/80 p-2 rounded-2xl mb-4 border border-gray-700">
     {HEAT_LEVELS.map((h) => (
-      <button
-        key={h.level}
-        onClick={() => setLevel(h.level)}
-        className={`flex flex-col items-center justify-center py-2 rounded-lg transition-all ${currentLevel === h.level ? 'bg-gray-800 border border-gray-500 shadow-white/10 shadow-lg scale-105' : 'opacity-40 hover:opacity-70'}`}
-      >
+      <button key={h.level} onClick={() => setLevel(h.level)} className={`flex flex-col items-center justify-center py-2 rounded-lg transition-all ${currentLevel === h.level ? 'bg-gray-800 border border-gray-500 shadow-white/10 shadow-lg scale-105' : 'opacity-40 hover:opacity-70'}`}>
         <span className="text-lg">{h.icon}</span>
         <span className={`text-[8px] font-bold uppercase mt-1 ${h.color}`}>{h.level === 'all' ? 'RAND' : `NVL ${h.level}`}</span>
       </button>
@@ -233,113 +219,89 @@ export default function App() {
   const handleAudienceSelect = (audience) => { setSelectedAudience(audience); setScreen('games'); };
   
   const handleGameSelect = (gameId) => {
-    setRouletteStatus('ready'); setPunishment(""); setCurrentCard(null); setCurrentPos(null); setNeverText("Toca para empezar"); setIsTimerActive(false); setTimer(60); setShotsFired([]);
-    setCardTimer(null); setIsCardTimerRunning(false); setCurrentSessionHeat(1);
-    
+    setRouletteStatus('ready'); setPunishment(""); setCurrentCard(null); setCurrentPos(null); setNeverText("Toca para empezar"); setIsTimerActive(false); setTimer(60); setShotsFired([]); setCardTimer(null); setIsCardTimerRunning(false); setCurrentSessionHeat(1);
     const filterContent = (data) => (heatLevel === 'all' ? data : data.filter(item => item.level <= heatLevel));
-
     if (gameId === 'cards') setCardDeck(shuffleArray(filterContent(CARDS_DB)));
     else if (gameId === 'kama' || gameId === 'timer') setKamaDeck(shuffleArray(filterContent(KAMA_POSITIONS)));
     else if (gameId === 'never') setNeverDeck(shuffleArray(filterContent(NEVER_DATA)));
-    
     setScreen(`play-${gameId}`);
   };
 
-  const goBack = () => { 
-      setIsTimerActive(false); 
-      setIsCardTimerRunning(false);
-      if (screen.startsWith('play-')) setScreen('games'); else if (screen === 'games') setScreen('audience'); else if (screen === 'audience') setScreen('home'); 
-  };
+  const goBack = () => { setIsTimerActive(false); setIsCardTimerRunning(false); if (screen.startsWith('play-')) setScreen('games'); else if (screen === 'games') setScreen('audience'); else if (screen === 'audience') setScreen('home'); };
 
-  // --- LÓGICA "SMART HEAT" ---
+  // --- LÓGICA "SMART HEAT" MEJORADA ---
   const filterContent = (data) => (heatLevel === 'all' ? data : data.filter(item => item.level <= heatLevel));
-
+  
+  // Lógica de Anti-Enfriamiento
   const pickSmartItem = (deck) => {
     if (heatLevel !== 'all') {
         const item = deck[deck.length - 1];
-        const newDeck = deck.slice(0, deck.length - 1);
-        return { item, newDeck };
+        return { item, newDeck: deck.slice(0, deck.length - 1) };
     } else {
-        const minAllowed = Math.max(1, currentSessionHeat - 1);
+        // Si la temperatura es alta (>3), NO permitir bajar a 1 o 2.
+        const minAllowed = currentSessionHeat >= 4 ? 3 : Math.max(1, currentSessionHeat - 1);
+        
         let candidates = deck.filter(item => item.level >= minAllowed);
+        
+        // Si no hay cartas de nivel alto (se acabaron), permitir todo para no romper el juego
         if (candidates.length === 0) candidates = deck;
+        
         const item = candidates[Math.floor(Math.random() * candidates.length)];
         setCurrentSessionHeat(item.level);
-        const newDeck = deck.filter(i => i !== item);
-        return { item, newDeck };
+        return { item, newDeck: deck.filter(i => i !== item) };
     }
   };
 
   const rollDice = () => {
     if (isRolling) return; setIsRolling(true); playSound('click');
-    
-    let minLevel = 1;
-    if (heatLevel === 'all') minLevel = Math.max(1, currentSessionHeat - 1);
+    let minLevel = 1; 
+    // Lógica dados: si está caliente, mantener caliente
+    if (heatLevel === 'all') minLevel = currentSessionHeat >= 4 ? 3 : Math.max(1, currentSessionHeat - 1);
     
     const filterDice = (arr) => {
         if (heatLevel !== 'all') return arr.filter(d => d.level <= heatLevel);
         let candidates = arr.filter(d => d.level >= minLevel);
-        if (candidates.length === 0) candidates = arr;
-        return candidates;
+        return candidates.length === 0 ? arr : candidates;
     };
-
-    const actions = filterDice(DICE_ACTIONS);
-    const parts = filterDice(DICE_BODYPARTS);
-
+    const actions = filterDice(DICE_ACTIONS); const parts = filterDice(DICE_BODYPARTS);
     let counter = 0;
     const interval = setInterval(() => {
       const act = actions[Math.floor(Math.random() * actions.length)];
       const part = parts[Math.floor(Math.random() * parts.length)];
-      setDice1(act.text.toUpperCase());
-      setDice2(part.text.toUpperCase());
+      setDice1(act.text.toUpperCase()); setDice2(part.text.toUpperCase());
       if (counter === 12) setCurrentSessionHeat(Math.max(act.level, part.level));
-      counter++;
-      if (counter > 12) { clearInterval(interval); setIsRolling(false); playSound('click'); }
+      counter++; if (counter > 12) { clearInterval(interval); setIsRolling(false); playSound('click'); }
     }, 80);
   };
 
   const drawCard = () => {
     let currentDeck = [...cardDeck];
-    if (currentDeck.length === 0) { 
-        const data = filterContent(CARDS_DB);
-        currentDeck = shuffleArray(data); 
-    }
+    if (currentDeck.length === 0) { const data = filterContent(CARDS_DB); currentDeck = shuffleArray(data); }
     const { item, newDeck } = pickSmartItem(currentDeck);
-    setCardDeck(newDeck);
-    setCurrentCard(item);
+    setCardDeck(newDeck); setCurrentCard(item);
     if (item.time) { setCardTimer(item.time); setIsCardTimerRunning(false); } else setCardTimer(null);
   };
 
   const drawPosition = () => {
     let currentDeck = [...kamaDeck];
-    if (currentDeck.length === 0) { 
-        const data = filterContent(KAMA_POSITIONS);
-        currentDeck = shuffleArray(data);
-    }
+    if (currentDeck.length === 0) { const data = filterContent(KAMA_POSITIONS); currentDeck = shuffleArray(data); }
     const { item, newDeck } = pickSmartItem(currentDeck);
-    setKamaDeck(newDeck);
-    setCurrentPos(item);
+    setKamaDeck(newDeck); setCurrentPos(item);
   };
 
   const nextNever = () => {
     let currentDeck = [...neverDeck];
-    if (currentDeck.length === 0) {
-        const data = filterContent(NEVER_DATA);
-        currentDeck = shuffleArray(data);
-    }
+    if (currentDeck.length === 0) { const data = filterContent(NEVER_DATA); currentDeck = shuffleArray(data); }
     const { item, newDeck } = pickSmartItem(currentDeck);
-    setNeverDeck(newDeck);
-    setNeverText(item.text);
+    setNeverDeck(newDeck); setNeverText(item.text);
   };
 
-  // Ruleta
   const spinRoulette = () => {
     setRouletteStatus('spinning'); setPunishment(""); playSound('spin'); setShotsFired([]);
     let chambers = Array(6).fill('empty');
     let bullets = doubleBullet ? 2 : 1;
     for(let i=0; i<bullets; i++) { let pos; do { pos = Math.floor(Math.random()*6); } while(chambers[pos] === 'bullet'); chambers[pos] = 'bullet'; }
-    setRouletteChambers(chambers); setCurrentChamberIdx(0);
-    setTimeout(() => setRouletteStatus('playing'), 1500);
+    setRouletteChambers(chambers); setCurrentChamberIdx(0); setTimeout(() => setRouletteStatus('playing'), 1500);
   };
 
   const pullTrigger = () => {
@@ -352,15 +314,15 @@ export default function App() {
             playSound('bang'); setRouletteStatus('dead'); newShots.push('bang'); setShotsFired(newShots);
             let deaths;
             if (heatLevel === 'all') {
-                const min = Math.max(1, currentSessionHeat - 1);
+                // Ruleta Smart: Si muere en nivel alto, castigo nivel alto
+                const min = currentSessionHeat >= 4 ? 4 : 1;
                 deaths = ROULETTE_DB.filter(r => r.level >= min);
                 if (deaths.length === 0) deaths = ROULETTE_DB;
             } else {
                 deaths = ROULETTE_DB.filter(r => r.level <= heatLevel);
             }
             const chosen = deaths[Math.floor(Math.random() * deaths.length)];
-            setPunishment(chosen?.text || "Bebe todo el vaso.");
-            setCurrentSessionHeat(chosen?.level || 1);
+            setPunishment(chosen?.text || "Bebe todo."); setCurrentSessionHeat(chosen?.level || 1);
         } else {
             playSound('click'); setRouletteStatus('safe'); newShots.push('safe'); setShotsFired(newShots);
             setPunishment("¡Salvado! Pasa el turno.");
@@ -369,14 +331,14 @@ export default function App() {
     }, 1000);
   };
 
-  // Renders
+  // --- RENDERS ---
   const renderHome = () => (
     <div className="flex flex-col h-full justify-between pt-12 pb-6 animate-fade-in">
       <div className="text-center space-y-6">
         <div className="relative inline-block"><div className="absolute inset-0 bg-pink-500 blur-2xl opacity-40 rounded-full animate-pulse"></div><Flame className="w-28 h-28 text-red-500 relative z-10 mx-auto" fill="currentColor" /></div>
         <div><h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 tracking-tight">INTIMOUS</h1><p className="text-gray-400 text-sm font-medium tracking-widest mt-2 uppercase opacity-80">Intimidad & Anonimato</p></div>
       </div>
-      <div className="space-y-6 px-8"><Button onClick={() => setScreen('audience')}><Play fill="currentColor" className="w-5 h-5" /> ENTRAR AL JUEGO</Button><div className="text-[10px] text-center text-gray-600 font-mono">v18.1 • SMART HEAT LOGIC<br/><span className="opacity-50">by JTA</span></div></div>
+      <div className="space-y-6 px-8"><Button onClick={() => setScreen('audience')}><Play fill="currentColor" className="w-5 h-5" /> ENTRAR AL JUEGO</Button><div className="text-[10px] text-center text-gray-600 font-mono">v20.0 • SMART HEAT + FIXES<br/><span className="opacity-50">by JTA</span></div></div>
     </div>
   );
 
