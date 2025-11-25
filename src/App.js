@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Dice5, Flame, Heart, Beer, Zap, Moon, Skull, Bomb, Layers, Timer, Pause, RotateCcw, Play, ArrowLeft, Image as ImageIcon, AlertTriangle, ShieldCheck, Shuffle, Crosshair, Thermometer, Clock } from 'lucide-react';
+import { Dice5, Flame, Heart, Beer, Zap, Moon, Skull, Bomb, Layers, Timer, Pause, RotateCcw, Play, ArrowLeft, Image as ImageIcon, AlertTriangle, ShieldCheck, Shuffle, Crosshair, Thermometer, Clock, Lightbulb } from 'lucide-react';
 
 // --- CONFIGURACIÓN DE AUDIENCIAS ---
 const AUDIENCES = [
-  { id: 'couple', label: 'Pareja Estable', icon: Heart, desc: 'Fantasías, conexión y límites nuevos', color: 'text-rose-500', bg: 'bg-rose-500/20' },
-  { id: 'fwb', label: 'Amigos con Derechos', icon: Zap, desc: 'Placer directo sin ataduras', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
-  { id: 'ons', label: 'Una Noche', icon: Flame, desc: 'Aquí y ahora. Sin preguntas.', color: 'text-orange-500', bg: 'bg-orange-500/20' },
-  { id: 'date', label: 'Primera Cita', icon: Moon, desc: 'Romper el hielo con tensión', color: 'text-purple-400', bg: 'bg-purple-500/20' },
-  { id: 'friends', label: 'Fiesta / Grupo', icon: Beer, desc: 'Descontrol social y risas', color: 'text-blue-400', bg: 'bg-blue-500/20' },
-  { id: 'ex', label: 'Ex Pareja', icon: Skull, desc: 'Morbo, rencor y despedidas', color: 'text-gray-400', bg: 'bg-gray-500/20' },
+  { id: 'couple', label: 'Pareja Estable', icon: Heart, desc: 'Confianza, amor y nuevos límites', color: 'text-rose-500', bg: 'bg-rose-500/20' },
+  { id: 'fwb', label: 'Amigos con Derechos', icon: Zap, desc: 'Sudor, placer y cero drama', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
+  { id: 'ons', label: 'Una Noche', icon: Flame, desc: 'Directo, rápido y sin preguntas', color: 'text-orange-500', bg: 'bg-orange-500/20' },
+  { id: 'date', label: 'Primera Cita', icon: Moon, desc: 'Coqueteo, tensión y risas', color: 'text-purple-400', bg: 'bg-purple-500/20' },
+  { id: 'friends', label: 'Fiesta / Grupo', icon: Beer, desc: 'Descontrol social para todos', color: 'text-blue-400', bg: 'bg-blue-500/20' },
+  { id: 'ex', label: 'Ex Pareja', icon: Skull, desc: 'Morbo, recuerdos y peligro', color: 'text-gray-400', bg: 'bg-gray-500/20' },
 ];
 
 // --- JUEGOS DISPONIBLES ---
 const GAMES = [
-  { id: 'cards', label: 'Verdad o Reto X', desc: 'Retos explícitos y confesiones.', icon: Zap, type: 'social' },
-  { id: 'dice', label: 'Dados Calientes', desc: 'Acción + Parte del cuerpo.', icon: Dice5, type: 'action' },
+  { id: 'cards', label: 'Verdad o Reto X', desc: 'Adaptado a tu situación actual.', icon: Zap, type: 'social' },
+  { id: 'dice', label: 'Dados Calientes', desc: 'El azar elige la acción.', icon: Dice5, type: 'action' },
   { id: 'kama', label: 'Kamasutra', desc: 'Posiciones por nivel.', icon: Layers, type: 'action' },
   { id: 'timer', label: 'Rally Cronometrado', desc: 'Cambio de posición automático.', icon: Timer, type: 'action' },
   { id: 'roulette', label: 'Ruleta Rusa', desc: 'Castigos extremos.', icon: Bomb, type: 'risk' },
@@ -28,7 +28,7 @@ const HEAT_LEVELS = [
   { level: 3, label: 'Erótico', icon: '🔥🔥🔥', color: 'text-orange-500', desc: 'Oral y Juguetes' },
   { level: 4, label: 'Hardcore', icon: '💀', color: 'text-red-500', desc: 'Fetiches y Acción' },
   { level: 5, label: 'XXX', icon: '😈', color: 'text-purple-500', desc: 'Sin Límites' },
-  { level: 'all', label: 'Caos', icon: <Shuffle size={16} />, color: 'text-white', desc: 'De menos a más' }
+  { level: 'all', label: 'Caos', icon: <Shuffle size={16} />, color: 'text-white', desc: '¡TODO VALE!' }
 ];
 
 // --- HELPER: BARAJAR ---
@@ -41,62 +41,81 @@ const shuffleArray = (array) => {
   return newArray;
 };
 
-// --- BASE DE DATOS EXTENDIDA Y DIRECTA (SIN CENSURA) ---
-const CARDS_DB = [
-  // NIVEL 1
-  { level: 1, type: 'truth', text: '¿Qué ropa interior llevas puesta hoy? Descríbela.' },
+// --- BASE DE DATOS SEGMENTADA ---
+
+const COMMON_CARDS = [
   { level: 1, type: 'truth', text: '¿Cuál es la parte de mi cuerpo que más te gusta mirar?' },
-  { level: 1, type: 'dare', text: 'Bésame el cuello suavemente.', time: 30 },
-  { level: 1, type: 'dare', text: 'Muerde mi labio inferior suavemente.' },
-  { level: 1, type: 'truth', text: '¿Qué pensaste la primera vez que me viste desnudo/a?' },
-  
-  // NIVEL 2
-  { level: 2, type: 'truth', text: '¿Te has tocado pensando en mí alguna vez?' },
-  { level: 2, type: 'dare', text: 'Quítate una prenda (que no sea zapatos o accesorios).' },
-  { level: 2, type: 'dare', text: 'Pasa tu mano por dentro de mi ropa interior sin tocar nada.' },
-  { level: 2, type: 'dare', text: 'Bésame la parte interna del muslo.' },
-  { level: 2, type: 'dare', text: 'Hazme un baile sensual (con ropa).', time: 60 },
-  
-  // NIVEL 3
-  { level: 3, type: 'dare', text: 'Dame un masaje sensual en los muslos y entrepierna (sin tocar genitales).', time: 60 },
-  { level: 3, type: 'dare', text: 'Quítate la ropa interior y entrégamela.' },
+  { level: 2, type: 'dare', text: 'Quítame una prenda sin usar las manos.' },
+  { level: 2, type: 'dare', text: 'Bésame el cuello apasionadamente.' },
   { level: 3, type: 'dare', text: 'Usa un cubo de hielo para recorrer todo mi cuerpo.', time: 60 },
-  { level: 3, type: 'dare', text: 'Véndate los ojos y déjate hacer lo que yo quiera.', time: 120 },
-  { level: 3, type: 'dare', text: 'Practícame sexo oral.', time: 120 },
-  { level: 3, type: 'dare', text: 'Mastúrbame con la mano.', time: 120 },
-  
-  // NIVEL 4 (Intenso)
-  { level: 4, type: 'dare', text: 'Si tienes pene, deja que te lo masturbe con los pies.', time: 90 },
-  { level: 4, type: 'dare', text: 'Ponte en cuatro y deja que te azote 3 veces firmemente.' },
-  { level: 4, type: 'dare', text: 'Escúpeme en la boca (o donde prefieras) suavemente.' },
-  { level: 4, type: 'dare', text: 'Lame mis genitales pero NO permitas que llegue al orgasmo (Edging).', time: 180 },
-  { level: 4, type: 'dare', text: 'Chupa mis dedos del pie apasionadamente.', time: 60 },
-  { level: 4, type: 'dare', text: 'Mastúrbate mirándome a los ojos.', time: 60 },
-  
-  // NIVEL 5 (CLIMAX - Directo)
-  { level: 5, type: 'dare', text: 'Penetración rápida: ¡Solo tienen este tiempo!', time: 30 },
-  { level: 5, type: 'dare', text: 'Sexo oral hasta que termine (orgasmo obligatorio).' },
-  { level: 5, type: 'dare', text: 'Hazme un Creampie dentro.' },
-  { level: 5, type: 'dare', text: 'Fóllame en la posición que yo elija ahora mismo.' },
-  { level: 5, type: 'dare', text: 'Dedos o lengua en el ano (Rimming).', time: 60 },
-  { level: 5, type: 'dare', text: 'Trágatelo todo. Sin escupir.' },
-  { level: 5, type: 'dare', text: 'Orgasmo mutuo: No paramos hasta que ambos terminemos.' },
-  { level: 5, type: 'dare', text: 'Córrete en mi cara o pecho.' },
+  { level: 4, type: 'dare', text: 'Mastúrbame con los pies.', time: 90 },
 ];
 
+const CARDS_DATA = {
+  couple: [
+    ...COMMON_CARDS,
+    { level: 1, type: 'truth', text: '¿Qué es lo que hago en la cama que te vuelve loco/a?' },
+    { level: 2, type: 'dare', text: 'Masajea mi espalda desnuda con aceite o crema.', time: 120 },
+    { level: 3, type: 'dare', text: 'Véndame los ojos y sorpréndeme con una sensación nueva.', time: 120 },
+    { level: 4, type: 'dare', text: 'Amárrame las manos a la cama (cinturón, corbata o cuerda).', time: 180 },
+    { level: 5, type: 'dare', text: 'Hazme un hijo (metafóricamente... o no). Termina dentro.' },
+    { level: 5, type: 'dare', text: 'Si tienen un vibrador, póntelo encendido y salgamos a la calle (o al cine) así.' }, // NUEVO
+    { level: 5, type: 'dare', text: 'Jugueteo anal: Usa lo que tengas a mano (seguro) o lengua.' }
+  ],
+  ons: [
+    ...COMMON_CARDS.filter(c => c.level > 1),
+    { level: 2, type: 'dare', text: 'Quítate la ropa. Toda. Ahora.' },
+    { level: 3, type: 'dare', text: 'Pon mi mano en tu entrepierna y muévela como te gusta.' },
+    { level: 4, type: 'dare', text: 'Ponte en cuatro. Ya.' },
+    { level: 4, type: 'dare', text: 'Escúpeme en la boca.' },
+    { level: 5, type: 'dare', text: 'Fóllame duro contra la pared.' },
+    { level: 5, type: 'dare', text: 'Hazme un Creampie.' }
+  ],
+  ex: [
+    { level: 1, type: 'truth', text: '¿Qué es lo que más extrañabas de mi cuerpo?' },
+    { level: 2, type: 'truth', text: '¿Quién lo hace mejor: yo o tu última pareja?' },
+    { level: 3, type: 'dare', text: 'Bésame como si nos estuviéramos reconciliando.' },
+    { level: 4, type: 'dare', text: 'Tócame exactamente como sabes que me gusta.' },
+    { level: 5, type: 'dare', text: 'Sexo de despedida. Haz que valga la pena.' }
+  ],
+  fwb: [
+    ...COMMON_CARDS,
+    { level: 3, type: 'dare', text: 'Graba un video corto (privado) de nosotros.' },
+    { level: 4, type: 'dare', text: 'Prueba una posición del Kamasutra que parezca difícil.' },
+    { level: 5, type: 'dare', text: 'Trágatelo todo.' },
+    { level: 5, type: 'dare', text: 'Usa un juguete en público (o en el balcón/ventana) por 1 minuto.' } // NUEVO
+  ],
+  date: [
+    { level: 1, type: 'truth', text: '¿Qué fue lo primero que pensaste al verme hoy?' },
+    { level: 1, type: 'dare', text: 'Sostén mi mirada por 10 segundos sin reírte.' },
+    { level: 2, type: 'dare', text: 'Dame un beso de película.' },
+    { level: 3, type: 'dare', text: 'Susúrrame al oído lo que quieres que pase más tarde.' },
+    { level: 4, type: 'dare', text: 'Déjame tocarte por encima de la ropa interior.' }
+  ],
+  friends: [
+    { level: 1, type: 'truth', text: '¿Quién de aquí besa mejor?' },
+    { level: 2, type: 'dare', text: 'Beso de tres con dos personas a tu elección.' },
+    { level: 3, type: 'dare', text: 'Quítate una prenda.' },
+    { level: 3, type: 'dare', text: 'Haz un baile erótico (Lap Dance) a alguien del grupo.' },
+    { level: 4, type: 'dare', text: 'Intercambia ropa interior con alguien (si se atreven).' },
+    { level: 5, type: 'dare', text: '7 minutos en el paraíso con alguien que el grupo elija.' }
+  ]
+};
+
+// --- DADOS Y OTROS ---
 const DICE_ACTIONS = [
-  { text: 'Besar', level: 1 }, { text: 'Acariciar', level: 1 }, { text: 'Soplar', level: 1 },
+  { text: 'Besar', level: 1 }, { text: 'Soplar', level: 1 }, { text: 'Susurrar', level: 1 },
   { text: 'Lamer', level: 2 }, { text: 'Morder', level: 2 }, { text: 'Chupar', level: 2 },
-  { text: 'Nalguear', level: 3 }, { text: 'Masajear con aceite', level: 3 },
+  { text: 'Nalguear', level: 3 }, { text: 'Masajear con aceite', level: 3 }, { text: 'Vibrar en', level: 3 },
   { text: 'Escupir', level: 4 }, { text: 'Dominar', level: 4 }, { text: 'Pies en', level: 4 },
   { text: 'Penetrar', level: 5 }, { text: 'Orgasmo en', level: 5 }, { text: 'Garganta profunda', level: 5 }
 ];
 const DICE_BODYPARTS = [
   { text: 'Cuello', level: 1 }, { text: 'Oreja', level: 1 }, { text: 'Manos', level: 1 },
-  { text: 'Pezones', level: 2 }, { text: 'Muslos', level: 2 }, { text: 'Espalda Baja', level: 2 },
+  { text: 'Pezones', level: 2 }, { text: 'Muslos', level: 2 }, { text: 'Espalda', level: 2 },
   { text: 'Genitales', level: 3 }, { text: 'Trasero', level: 3 }, { text: 'Perineo', level: 3 },
   { text: 'Pies', level: 4 }, { text: 'Garganta', level: 4 }, { text: 'Ano', level: 4 },
-  { text: 'Donde quieras', level: 5 }, { text: 'Boca (Oral)', level: 5 }, { text: 'Adentro', level: 5 }
+  { text: 'Donde quieras', level: 5 }, { text: 'Boca', level: 5 }, { text: 'Adentro', level: 5 }
 ];
 
 const KAMA_POSITIONS = [
@@ -117,7 +136,7 @@ const ROULETTE_DB = [
   { text: "Quítate la camisa.", level: 2 }, { text: "Nalgada seca.", level: 2 },
   { text: "Quítate ropa interior.", level: 3 }, { text: "Oral 1 minuto.", level: 3 },
   { text: "Chupar dedos del pie.", level: 4 }, { text: "Azotes con cinturón.", level: 4 },
-  { text: "Penetración anal (o intento).", level: 5 }, { text: "Tragar (Cumswallow).", level: 5 },
+  { text: "Penetración anal.", level: 5 }, { text: "Tragar todo.", level: 5 },
   { text: "Hacer un Creampie.", level: 5 }
 ];
 
@@ -127,7 +146,7 @@ const NEVER_DATA = [
   { text: "Yo nunca he tenido sexo en un lugar público.", level: 3 },
   { text: "Yo nunca he tenido un fetiche de pies.", level: 4 },
   { text: "Yo nunca he participado en una orgía.", level: 5 },
-  { text: "Yo nunca he probado el sabor de mi propio fluido.", level: 5 }
+  { text: "Yo nunca he probado mis propios fluidos.", level: 5 }
 ];
 
 // --- COMPONENTES UI ---
@@ -166,24 +185,16 @@ export default function App() {
   const [screen, setScreen] = useState('home'); 
   const [selectedAudience, setSelectedAudience] = useState(null);
   const [heatLevel, setHeatLevel] = useState(1);
-  
-  // Estados
   const [dice1, setDice1] = useState('?');
   const [dice2, setDice2] = useState('?');
   const [isRolling, setIsRolling] = useState(false);
   const [currentCard, setCurrentCard] = useState(null);
   const [currentPos, setCurrentPos] = useState(null);
   const [neverText, setNeverText] = useState("Toca para empezar");
-  
-  // Mazos
   const [cardDeck, setCardDeck] = useState([]);
   const [kamaDeck, setKamaDeck] = useState([]);
   const [neverDeck, setNeverDeck] = useState([]);
-  
-  // Temperatura
   const [currentSessionHeat, setCurrentSessionHeat] = useState(1);
-
-  // Estados Ruleta y Timer
   const [rouletteChambers, setRouletteChambers] = useState([]); 
   const [currentChamberIdx, setCurrentChamberIdx] = useState(0);
   const [rouletteStatus, setRouletteStatus] = useState('ready'); 
@@ -203,7 +214,6 @@ export default function App() {
     }
   };
 
-  // Timer Effects
   useEffect(() => {
     let interval = null;
     if (screen === 'play-timer' && isTimerActive && timer > 0) interval = setInterval(() => setTimer((t) => t - 1), 1000);
@@ -222,38 +232,33 @@ export default function App() {
   
   const handleGameSelect = (gameId) => {
     setRouletteStatus('ready'); setPunishment(""); setCurrentCard(null); setCurrentPos(null); setNeverText("Toca para empezar"); setIsTimerActive(false); setTimer(60); setShotsFired([]); setCardTimer(null); setIsCardTimerRunning(false); setCurrentSessionHeat(1);
+    
+    // PREPARAR MAZOS SEGÚN AUDIENCIA
+    const audId = selectedAudience?.id;
+    let baseCards = CARDS_DATA[audId] || CARDS_DATA.couple;
+    
     const filterContent = (data) => (heatLevel === 'all' ? data : data.filter(item => item.level <= heatLevel));
-    if (gameId === 'cards') setCardDeck(shuffleArray(filterContent(CARDS_DB)));
+
+    if (gameId === 'cards') setCardDeck(shuffleArray(filterContent(baseCards)));
     else if (gameId === 'kama' || gameId === 'timer') setKamaDeck(shuffleArray(filterContent(KAMA_POSITIONS)));
     else if (gameId === 'never') setNeverDeck(shuffleArray(filterContent(NEVER_DATA)));
+    
     setScreen(`play-${gameId}`);
   };
 
   const goBack = () => { setIsTimerActive(false); setIsCardTimerRunning(false); if (screen.startsWith('play-')) setScreen('games'); else if (screen === 'games') setScreen('audience'); else if (screen === 'audience') setScreen('home'); };
 
-  // --- LÓGICA "SMART HEAT" (PROGRESIÓN FORZADA) ---
   const filterContent = (data) => (heatLevel === 'all' ? data : data.filter(item => item.level <= heatLevel));
-  
   const pickSmartItem = (deck) => {
     if (heatLevel !== 'all') {
         const item = deck[deck.length - 1];
         return { item, newDeck: deck.slice(0, deck.length - 1) };
     } else {
-        // LÓGICA DE ESCALADA:
-        // - Nunca baja más de 1 nivel.
-        // - Nunca salta a nivel 5 desde nivel 1 o 2.
-        // - Bloquea niveles bajos (1 y 2) si la temperatura ya es alta (4 o 5).
-        
         const minAllowed = currentSessionHeat >= 4 ? 3 : Math.max(1, currentSessionHeat - 1);
-        const maxAllowed = Math.min(5, currentSessionHeat + 1); // Solo sube de a 1 paso
-        
+        const maxAllowed = Math.min(5, currentSessionHeat + 1);
         let candidates = deck.filter(item => item.level >= minAllowed && item.level <= maxAllowed);
-        
-        // Si se acaban las cartas perfectas, relajamos la regla "maxAllowed" pero mantenemos el "minAllowed" (para no enfriar)
         if (candidates.length === 0) candidates = deck.filter(item => item.level >= minAllowed);
-        // Si aun así no hay nada, usamos todo el mazo restante
         if (candidates.length === 0) candidates = deck;
-        
         const item = candidates[Math.floor(Math.random() * candidates.length)];
         setCurrentSessionHeat(item.level);
         return { item, newDeck: deck.filter(i => i !== item) };
@@ -262,19 +267,9 @@ export default function App() {
 
   const rollDice = () => {
     if (isRolling) return; setIsRolling(true); playSound('click');
-    let minLevel = 1; 
-    let maxLevel = 5;
-    // Lógica dados progresiva
-    if (heatLevel === 'all') {
-        minLevel = currentSessionHeat >= 4 ? 3 : Math.max(1, currentSessionHeat - 1);
-        maxLevel = Math.min(5, currentSessionHeat + 1);
-    }
-    
-    const filterDice = (arr) => {
-        if (heatLevel !== 'all') return arr.filter(d => d.level <= heatLevel);
-        let candidates = arr.filter(d => d.level >= minLevel && d.level <= maxLevel);
-        return candidates.length === 0 ? arr : candidates;
-    };
+    let minLevel = 1; let maxLevel = 5;
+    if (heatLevel === 'all') { minLevel = currentSessionHeat >= 4 ? 3 : Math.max(1, currentSessionHeat - 1); maxLevel = Math.min(5, currentSessionHeat + 1); }
+    const filterDice = (arr) => { if (heatLevel !== 'all') return arr.filter(d => d.level <= heatLevel); let c = arr.filter(d => d.level >= minLevel && d.level <= maxLevel); return c.length === 0 ? arr : c; };
     const actions = filterDice(DICE_ACTIONS); const parts = filterDice(DICE_BODYPARTS);
     let counter = 0;
     const interval = setInterval(() => {
@@ -288,7 +283,11 @@ export default function App() {
 
   const drawCard = () => {
     let currentDeck = [...cardDeck];
-    if (currentDeck.length === 0) { const data = filterContent(CARDS_DB); currentDeck = shuffleArray(data); }
+    if (currentDeck.length === 0) { 
+        let baseCards = CARDS_DATA[selectedAudience?.id] || CARDS_DATA.couple;
+        const data = filterContent(baseCards); 
+        currentDeck = shuffleArray(data); 
+    }
     const { item, newDeck } = pickSmartItem(currentDeck);
     setCardDeck(newDeck); setCurrentCard(item);
     if (item.time) { setCardTimer(item.time); setIsCardTimerRunning(false); } else setCardTimer(null);
@@ -326,13 +325,10 @@ export default function App() {
             playSound('bang'); setRouletteStatus('dead'); newShots.push('bang'); setShotsFired(newShots);
             let deaths;
             if (heatLevel === 'all') {
-                // En ruleta, el castigo debe ser al menos del nivel actual o superior (climax)
                 const min = Math.max(1, currentSessionHeat);
                 deaths = ROULETTE_DB.filter(r => r.level >= min);
                 if (deaths.length === 0) deaths = ROULETTE_DB;
-            } else {
-                deaths = ROULETTE_DB.filter(r => r.level <= heatLevel);
-            }
+            } else { deaths = ROULETTE_DB.filter(r => r.level <= heatLevel); }
             const chosen = deaths[Math.floor(Math.random() * deaths.length)];
             setPunishment(chosen?.text || "Bebe todo."); setCurrentSessionHeat(chosen?.level || 1);
         } else {
@@ -343,14 +339,20 @@ export default function App() {
     }, 1000);
   };
 
-  // --- RENDERS ---
+  // Renders
   const renderHome = () => (
     <div className="flex flex-col h-full justify-between pt-12 pb-6 animate-fade-in">
       <div className="text-center space-y-6">
         <div className="relative inline-block"><div className="absolute inset-0 bg-pink-500 blur-2xl opacity-40 rounded-full animate-pulse"></div><Flame className="w-28 h-28 text-red-500 relative z-10 mx-auto" fill="currentColor" /></div>
-        <div><h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 tracking-tight">INTIMOUS</h1><p className="text-gray-400 text-sm font-medium tracking-widest mt-2 uppercase opacity-80">Intimidad & Anonimato</p></div>
+        <div><h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 tracking-tight">INTIMOUS</h1><p className="text-pink-300 italic text-sm mt-4 font-serif">"La aplicación lo dirá por ti, solo disfruta"</p></div>
+        
+        {/* KIT DE PREPARACIÓN */}
+        <div className="mx-6 mt-8 px-6 py-4 bg-white/5 rounded-xl border border-white/10 text-xs text-gray-400 text-center shadow-lg">
+          <p className="font-bold text-pink-400 mb-2 flex items-center justify-center gap-2"><Lightbulb size={14}/> TIP PRO: EL KIT</p>
+          <p className="leading-relaxed">Para la experiencia completa, ten a mano:<br/> <span className="text-white font-semibold">Hielo, Cera, Corbatas, Juguetes y Aceite.</span></p>
+        </div>
       </div>
-      <div className="space-y-6 px-8"><Button onClick={() => setScreen('audience')}><Play fill="currentColor" className="w-5 h-5" /> ENTRAR AL JUEGO</Button><div className="text-[10px] text-center text-gray-600 font-mono">v21.0 • CLIMAX EDITION<br/><span className="opacity-50">by JTA</span></div></div>
+      <div className="space-y-6 px-8"><Button onClick={() => setScreen('audience')}><Play fill="currentColor" className="w-5 h-5" /> ENTRAR AL JUEGO</Button><div className="text-[10px] text-center text-gray-600 font-mono">v23.0 • FULL EXPERIENCE<br/><span className="opacity-50">by JTA</span></div></div>
     </div>
   );
 
