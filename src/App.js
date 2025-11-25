@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Dice5, Flame, Heart, Beer, Zap, Moon, Skull, Bomb, Layers, Timer, Pause, RotateCcw, Play, ArrowLeft, Image as ImageIcon, AlertTriangle, ShieldCheck, Shuffle, Crosshair, Thermometer, Clock, Lightbulb } from 'lucide-react';
+import { Dice5, Flame, Heart, Beer, Zap, Moon, Skull, Bomb, Layers, Timer, Pause, RotateCcw, Play, ArrowLeft, Image as ImageIcon, AlertTriangle, ShieldCheck, Shuffle, Crosshair, Thermometer, Clock, Lightbulb, Infinity, Sparkles } from 'lucide-react';
 
 // --- CONFIGURACIÓN DE AUDIENCIAS ---
 const AUDIENCES = [
   { id: 'couple', label: 'Pareja Estable', icon: Heart, desc: 'Confianza, amor y nuevos límites', color: 'text-rose-500', bg: 'bg-rose-500/20' },
-  { id: 'fwb', label: 'Amigos con Derechos', icon: Zap, desc: 'Sudor, placer y cero drama', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
+  { id: 'buddy', label: 'Folla-Amigos', icon: Infinity, desc: 'Solo sexo. Repetimos porque es bueno', color: 'text-cyan-400', bg: 'bg-cyan-500/20' },
+  { id: 'situationship', label: 'Casi Algo', icon: Sparkles, desc: 'Esa tensión de "no somos nada"', color: 'text-fuchsia-400', bg: 'bg-fuchsia-500/20' },
+  { id: 'fwb', label: 'Amigos con Derechos', icon: Zap, desc: 'Amistad, risas y placer', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
   { id: 'ons', label: 'Una Noche', icon: Flame, desc: 'Directo, rápido y sin preguntas', color: 'text-orange-500', bg: 'bg-orange-500/20' },
-  { id: 'date', label: 'Primera Cita', icon: Moon, desc: 'Coqueteo, tensión y risas', color: 'text-purple-400', bg: 'bg-purple-500/20' },
+  { id: 'date', label: 'Primera Cita', icon: Moon, desc: 'Coqueteo, tensión y romper el hielo', color: 'text-purple-400', bg: 'bg-purple-500/20' },
   { id: 'friends', label: 'Fiesta / Grupo', icon: Beer, desc: 'Descontrol social para todos', color: 'text-blue-400', bg: 'bg-blue-500/20' },
   { id: 'ex', label: 'Ex Pareja', icon: Skull, desc: 'Morbo, recuerdos y peligro', color: 'text-gray-400', bg: 'bg-gray-500/20' },
 ];
@@ -59,7 +61,7 @@ const CARDS_DATA = {
     { level: 3, type: 'dare', text: 'Véndame los ojos y sorpréndeme con una sensación nueva.', time: 120 },
     { level: 4, type: 'dare', text: 'Amárrame las manos a la cama (cinturón, corbata o cuerda).', time: 180 },
     { level: 5, type: 'dare', text: 'Hazme un hijo (metafóricamente... o no). Termina dentro.' },
-    { level: 5, type: 'dare', text: 'Si tienen un vibrador, póntelo encendido y salgamos a la calle (o al cine) así.' }, // NUEVO
+    { level: 5, type: 'dare', text: 'Si tienen un vibrador, póntelo encendido y salgamos a la calle (o al cine) así.' },
     { level: 5, type: 'dare', text: 'Jugueteo anal: Usa lo que tengas a mano (seguro) o lengua.' }
   ],
   ons: [
@@ -70,6 +72,25 @@ const CARDS_DATA = {
     { level: 4, type: 'dare', text: 'Escúpeme en la boca.' },
     { level: 5, type: 'dare', text: 'Fóllame duro contra la pared.' },
     { level: 5, type: 'dare', text: 'Hazme un Creampie.' }
+  ],
+  // --- NUEVO: FOLLA-AMIGOS (Buddy) ---
+  buddy: [
+    { level: 1, type: 'truth', text: '¿Cuál ha sido nuestro mejor polvo hasta ahora?' },
+    { level: 2, type: 'dare', text: 'Saltémonos los preliminares. Quítame la ropa ya.' },
+    { level: 3, type: 'dare', text: 'Repitamos exactamente lo que hicimos la última vez.' },
+    { level: 3, type: 'truth', text: '¿Te has masturbado pensando en nuestro último encuentro?' },
+    { level: 4, type: 'dare', text: '69 agresivo: Yo controlo el ritmo.', time: 120 },
+    { level: 5, type: 'dare', text: 'Sin besos, solo acción. Penétrame/Penétrame ahora.' },
+    { level: 5, type: 'dare', text: 'Graba solo el audio de este polvo.' }
+  ],
+  // --- NUEVO: CASI ALGO (Situationship) ---
+  situationship: [
+    { level: 1, type: 'truth', text: '¿En qué momento exacto te diste cuenta de que te gustaba?' },
+    { level: 2, type: 'dare', text: 'Bésame como si fueras mi novio/a por 1 minuto.' },
+    { level: 2, type: 'truth', text: '¿Te pones celoso/a si me ves con otros?' },
+    { level: 3, type: 'dare', text: 'Déjame una marca (chupón/mordida) en un lugar visible.' },
+    { level: 4, type: 'dare', text: 'Dime qué somos... mientras me tocas.' },
+    { level: 5, type: 'dare', text: 'Hazme el amor (no solo sexo) por primera vez.' }
   ],
   ex: [
     { level: 1, type: 'truth', text: '¿Qué es lo que más extrañabas de mi cuerpo?' },
@@ -83,7 +104,7 @@ const CARDS_DATA = {
     { level: 3, type: 'dare', text: 'Graba un video corto (privado) de nosotros.' },
     { level: 4, type: 'dare', text: 'Prueba una posición del Kamasutra que parezca difícil.' },
     { level: 5, type: 'dare', text: 'Trágatelo todo.' },
-    { level: 5, type: 'dare', text: 'Usa un juguete en público (o en el balcón/ventana) por 1 minuto.' } // NUEVO
+    { level: 5, type: 'dare', text: 'Usa un juguete en público (o en el balcón/ventana) por 1 minuto.' }
   ],
   date: [
     { level: 1, type: 'truth', text: '¿Qué fue lo primero que pensaste al verme hoy?' },
