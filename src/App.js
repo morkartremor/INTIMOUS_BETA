@@ -44,9 +44,8 @@ const shuffleArray = (array) => {
 };
 
 // ==========================================
-// 🚀 MEGA BASE DE DATOS
+// 🚀 BASE DE DATOS
 // ==========================================
-// (Mantenemos la base de datos completa de la versión anterior)
 
 const PHOTO_DATA = {
   kinky: [
@@ -285,7 +284,17 @@ const Button = ({ children, onClick, className = "", variant = "primary", disabl
   return <button onClick={onClick} disabled={disabled} className={`${baseStyle} ${variants[variant]} ${className}`}>{children}</button>;
 };
 const HeatSelector = ({ currentLevel, setLevel }) => (<div className="flex gap-2 bg-gray-900/80 p-2 rounded-2xl mb-4 border border-gray-700 overflow-x-auto snap-x snap-mandatory no-scrollbar">{HEAT_LEVELS.map((h) => (<button key={h.level} onClick={() => setLevel(h.level)} className={`snap-center shrink-0 w-20 flex flex-col items-center justify-center py-2 rounded-lg transition-all ${currentLevel === h.level ? 'bg-gray-800 border border-gray-500 shadow-white/10 shadow-lg scale-105' : 'opacity-40 hover:opacity-70'}`}><span className="text-lg">{h.icon}</span><span className={`text-[8px] font-bold uppercase mt-1 ${h.color}`}>{h.level === 'all' ? 'RAND' : `NVL ${h.level}`}</span></button>))}</div>);
-const CardItem = ({ label, desc, icon: Icon, onClick, color, bg }) => (<div onClick={onClick} className="w-full bg-gray-900/80 border border-gray-800 rounded-2xl p-5 flex items-start gap-4 hover:border-pink-500/50 transition-all active:scale-95 cursor-pointer relative overflow-hidden group"><div className={`absolute inset-0 ${bg} opacity-5 group-hover:opacity-10 transition-opacity`}></div><div className={`p-3 rounded-xl shrink-0 ${bg} ${color}`}><Icon size={24} /></div><div className="flex-1 min-w-0 z-10"><h3 className="text-lg font-bold text-gray-100 leading-tight mb-1 break-words">{label}</h3><p className="text-sm text-gray-400 leading-normal break-words whitespace-normal">{desc}</p></div></div>);
+const CardItem = ({ label, desc, icon: Icon, onClick, color, bg }) => (
+  // RE-DISEÑO DE TARJETA PARA EVITAR CORTES DE TEXTO
+  <div onClick={onClick} className="w-full bg-gray-900/80 border border-gray-800 rounded-2xl p-4 flex items-start gap-4 hover:border-pink-500/50 transition-all active:scale-95 cursor-pointer relative overflow-hidden group min-h-[80px]">
+    <div className={`absolute inset-0 ${bg} opacity-5 group-hover:opacity-10 transition-opacity`}></div>
+    <div className={`p-3 rounded-xl shrink-0 ${bg} ${color}`}><Icon size={28} /></div>
+    <div className="flex-1 flex flex-col justify-center z-10"> 
+      <h3 className="text-lg font-bold text-gray-100 leading-snug mb-1">{label}</h3>
+      <p className="text-sm text-gray-400 leading-relaxed">{desc}</p>
+    </div>
+  </div>
+);
 const PenaltyBadge = ({ level }) => { let t="", c=""; if (level <= 2) { t = "Castigo: 1 Trago"; c = "bg-blue-500/20 text-blue-300 border-blue-500/50"; } else if (level <= 4) { t = "Castigo: 1 Shot"; c = "bg-orange-500/20 text-orange-300 border-orange-500/50"; } else { t = "Castigo: 2 Shots / Fondo"; c = "bg-red-600/20 text-red-300 border-red-500/50 animate-pulse"; } return (<div className={`mt-4 mb-2 px-4 py-1 rounded-full border text-xs font-bold uppercase tracking-wide ${c}`}>{t}</div>); };
 
 // --- APP PRINCIPAL ---
@@ -376,7 +385,7 @@ export default function App() {
         <div><h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 tracking-tight">INTIMOUS</h1><p className="text-pink-300 italic text-sm mt-4 font-serif">"La aplicación lo dirá por ti, solo disfruta"</p></div>
         <div className="mx-6 mt-6 space-y-3"><div className="px-6 py-4 bg-white/5 rounded-xl border border-white/10 text-xs text-gray-300 text-center shadow-lg"><p className="font-bold text-blue-400 mb-1 flex items-center justify-center gap-2"><Wine size={14}/> PREPARA LOS TRAGOS</p><p className="opacity-80">Recomendamos tener alcohol (shots/cerveza) para los castigos.</p></div><div className="px-6 py-4 bg-white/5 rounded-xl border border-white/10 text-xs text-gray-400 text-center shadow-lg"><p className="font-bold text-pink-400 mb-1 flex items-center justify-center gap-2"><Lightbulb size={14}/> KIT DE PLACER</p><p className="opacity-80">Ten a mano: Hielo, Cera, Corbatas, Juguetes y Aceite.</p></div></div>
       </div>
-      <div className="space-y-6 px-8 pb-8 mt-auto"><Button onClick={() => setScreen('audience')}><Play fill="currentColor" className="w-5 h-5" /> ENTRAR AL JUEGO</Button><div className="text-[10px] text-center text-gray-600 font-mono">v41.1 • TEXT & LAYOUT FIX<br/><span className="opacity-50">by JTA</span></div></div>
+      <div className="space-y-6 px-8 pb-8 mt-auto"><Button onClick={() => setScreen('audience')}><Play fill="currentColor" className="w-5 h-5" /> ENTRAR AL JUEGO</Button><div className="text-[10px] text-center text-gray-600 font-mono">v42.0 • LAYOUT FIXED<br/><span className="opacity-50">by JTA</span></div></div>
     </div>
   );
 
