@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dice5, Flame, Heart, Beer, Zap, Moon, Skull, Bomb, Layers, Timer, Pause, RotateCcw, Play, ArrowLeft, Image as ImageIcon, AlertTriangle, ShieldCheck, Shuffle, Crosshair, Thermometer, Clock, Lightbulb, Infinity, Sparkles, Eye, Feather, Camera, Gift, Flag, Wine, Utensils, MessageCircle, UserPlus } from 'lucide-react';
+import { Dice5, Flame, Heart, Beer, Zap, Moon, Skull, Bomb, Layers, Timer, Pause, RotateCcw, Play, ArrowLeft, Image as ImageIcon, AlertTriangle, ShieldCheck, Shuffle, Crosshair, Thermometer, Clock, Lightbulb, Infinity, Sparkles, Eye, Feather, Camera, Gift, Flag, Wine, Utensils, MessageCircle, UserPlus, Music, BookOpen, Smile, Coffee, Film } from 'lucide-react';
 
 // --- CONFIGURACIÓN DE AUDIENCIAS ---
 const AUDIENCES = [
@@ -300,7 +300,7 @@ const DICE_BODYPARTS = [
   { text: 'Donde quieras', level: 5 }, 
   { text: 'Boca', level: 5 }, 
   { text: 'Adentro', level: 5 }, 
-  { text: 'Cara', level: 5 }
+  { text: 'Cara', level: 5 },
   { text: 'Pechos', level: 5 },
   { text: 'Trasero profundo', level: 5 }
   
@@ -311,7 +311,7 @@ const CLIMAX_ACTIONS = [
   { text: 'Correrse', level: 5 }, 
   { text: 'Llenar', level: 5 },
   { text: 'Explotar', level: 5 }, 
-  { text: 'Dejarlo todo', level: 5 }
+  { text: 'Dejarlo todo', level: 5 },
   { text: 'Inundar', level: 5 },
   { text: 'Descargar completo', level: 5 }
 ];
@@ -321,7 +321,7 @@ const CLIMAX_BODYPARTS = [
   { text: 'Pechos', level: 5 }, 
   { text: 'Cara', level: 5 }, 
   { text: 'Trasero', level: 5 }, 
-  { text: 'Garganta', level: 5 }
+  { text: 'Garganta', level: 5 },
   { text: 'Espalda', level: 5 },
   { text: 'Cabello', level: 5 }
 
@@ -402,7 +402,7 @@ const ROULETTE_DB = [
   { text: "Penetración anal.", level: 5 }, 
   { text: "Tragar todo.", level: 5, isFinisher: true },
   { text: "Hacer un Creampie.", level: 5, isFinisher: true }, 
-  { text: "Sexo anal obligatorio.", level: 5, isFinisher: true }
+  { text: "Sexo anal obligatorio.", level: 5, isFinisher: true },
   { text: "Orgasmo simultáneo obligatorio.", level: 5, isFinisher: true },
   { text: "Facial completo (terminar en la cara).", level: 5, isFinisher: true },
   { text: "Garganta profunda prolongado hasta el final.", level: 5, isFinisher: true }
@@ -451,7 +451,7 @@ const NEVER_DATA = [
   { text: "Yo nunca he participado en una orgía.", level: 5 }, 
   { text: "Yo nunca he probado mis propios fluidos.", level: 5 },
   { text: "Yo nunca he pagado por sexo.", level: 5 },
-  { text: "Yo nunca he tenido una ETS.", level: 5 }
+  { text: "Yo nunca he tenido una ETS.", level: 5 },
   { text: "Yo nunca he hecho un trío.", level: 5 },
   { text: "Yo nunca he tenido sexo sin protección con un desconocido.", level: 5 },
   { text: "Yo nunca he probado prácticas de dominación extrema.", level: 5 },
@@ -474,7 +474,7 @@ const BONUS_DATA = [
   { icon: <Beer/>, title: "Brindis", text: "Un último trago/shot para celebrar la sesión." },
   { icon: <RotateCcw/>, title: "Juego de Memoria", text: "Recordar qué reto fue el más excitante y repetirlo la próxima vez." }, // NUEVO
   { icon: <MessageCircle/>, title: "Confesiones Finales", text: "Cada uno revela algo que nunca había dicho." }, // NUEVO
-  { icon: <Flag/>, title: "Plan Secreto", text: "Escribir en papel dónde será el próximo encuentro y guardarlo." } // NUEVO
+  { icon: <Flag/>, title: "Plan Secreto", text: "Escribir en papel dónde será el próximo encuentro y guardarlo." }, // NUEVO
   { icon: <Music/>, title: "Playlist Sexy", text: "Pongan una canción y bailen abrazados, sin importar cómo se vean." },
   { icon: <BookOpen/>, title: "Historia Erótica", text: "Inventen juntos una mini historia erótica para la próxima vez." },
   { icon: <Zap/>, title: "Reto Flash", text: "Cada uno escribe un reto rápido en papel y lo guarda para la próxima sesión." },
@@ -528,10 +528,10 @@ const PHOTO_DATA = [
   //lvl5
   { level: 5, text: 'Secuencia de 3 fotos contando una historia.' },
   { level: 5, text: 'Penetración desde ángulo oculto.' },
-  { level: 5, text: 'Foto: Interior después de terminar.', isFinisher: true }
+  { level: 5, text: 'Foto: Interior después de terminar.', isFinisher: true },
   { level: 5, text: 'Video corto de gemidos o respiración fuerte.' },
   { level: 5, text: 'Foto POV durante penetración.' },
-  { level: 5, text: 'Foto de ambos sudados abrazados después del sexo.' }
+  { level: 5, text: 'Foto de ambos sudados abrazados después del sexo.' },
   { level: 5, text: 'Foto POV del último empuje antes del clímax.' },
   { level: 5, text: 'Foto artística del “money shot” con luz tenue.' },
   { level: 5, text: 'Secuencia de fotos mostrando el orgasmo progresivo.' },
@@ -542,7 +542,7 @@ const PHOTO_DATA = [
   { level: 5, text: 'Foto artística de gotas de sudor en la piel.' },
   { level: 5, text: 'Foto de beso profundo justo después de terminar.' },
   { level: 5, text: 'Foto de la cama desordenada como recuerdo del momento.' },
-  { level: 5, text: 'Foto artística de la silueta desnuda contra la ventana después del acto.' }
+  { level: 5, text: 'Foto artística de la silueta desnuda contra la ventana después del acto.' },
   { level: 5, text: 'Foto macro del semen corriendo por la piel.' },
   { level: 5, text: 'Foto con la boca abierta recibiendo todo.' },
   { level: 5, text: 'Foto del ano justo después de la penetración.' },
@@ -656,7 +656,7 @@ export default function App() {
         <div><h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 tracking-tight">INTIMOUS</h1><p className="text-pink-300 italic text-sm mt-4 font-serif">"La aplicación lo dirá por ti, solo disfruta"</p></div>
         <div className="mx-6 mt-6 space-y-3"><div className="px-6 py-4 bg-white/5 rounded-xl border border-white/10 text-xs text-gray-300 text-center shadow-lg"><p className="font-bold text-blue-400 mb-1 flex items-center justify-center gap-2"><Wine size={14}/> PREPARA LOS TRAGOS</p><p className="opacity-80">Recomendamos tener alcohol (shots/cerveza) para los castigos.</p></div><div className="px-6 py-4 bg-white/5 rounded-xl border border-white/10 text-xs text-gray-400 text-center shadow-lg"><p className="font-bold text-pink-400 mb-1 flex items-center justify-center gap-2"><Lightbulb size={14}/> KIT DE PLACER</p><p className="opacity-80">Ten a mano: Hielo, Cera, Corbatas, Juguetes y Aceite.</p></div></div>
       </div>
-      <div className="space-y-6 px-8 pb-8 mt-auto"><Button onClick={() => setScreen('audience')}><Play fill="currentColor" className="w-5 h-5" /> ENTRAR AL JUEGO</Button><div className="text-[10px] text-center text-gray-600 font-mono">v44.0 • THE DATABASE UPDATE<br/><span className="opacity-50">by JTA</span></div></div>
+      <div className="space-y-6 px-8 pb-8 mt-auto"><Button onClick={() => setScreen('audience')}><Play fill="currentColor" className="w-5 h-5" /> ENTRAR AL JUEGO</Button><div className="text-[10px] text-center text-gray-600 font-mono">v46.0 • Much Content<br/><span className="opacity-50">by JTA</span></div></div>
     </div>
   );
 
