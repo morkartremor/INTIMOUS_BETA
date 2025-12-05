@@ -10,7 +10,6 @@ const AUDIENCES = [
   { id: 'public', label: 'Adrenalina (Público)', icon: Eye, desc: 'El morbo de que nos vean.', color: 'text-emerald-400', bg: 'bg-emerald-500/20' },
   { id: 'situationship', label: 'Casi Algo', icon: Sparkles, desc: 'Tensión no resuelta.', color: 'text-fuchsia-400', bg: 'bg-fuchsia-500/20' },
   { id: 'ex', label: 'Ex Pareja', icon: Skull, desc: 'Morbo y recuerdos.', color: 'text-gray-400', bg: 'bg-gray-500/20' },
-  { id: 'date', label: 'Primera Cita', icon: Moon, desc: 'Coqueteo y romper el hielo.', color: 'text-purple-400', bg: 'bg-purple-500/20' },
   { id: 'friends', label: 'Fiesta / Grupo', icon: Beer, desc: 'Descontrol social.', color: 'text-blue-400', bg: 'bg-blue-500/20' },
 ];
 
@@ -25,7 +24,7 @@ const GAMES = [
   { id: 'roulette', label: 'Ruleta Rusa', desc: 'Castigos extremos.', icon: Bomb, type: 'risk' },
   { id: 'never', label: 'Yo Nunca XXX', desc: 'Confesiones calientes.', icon: Beer, type: 'social' },
 ];
-
+//////////////////////////////////
 const HEAT_LEVELS = [
   { level: 1, label: 'Coqueto', icon: '🔥', color: 'text-blue-300', desc: 'Calentamiento' },
   { level: 2, label: 'Caliente', icon: '🔥🔥', color: 'text-yellow-400', desc: 'Manos inquietas' },
@@ -45,10 +44,10 @@ const shuffleArray = (array) => {
 };
 
 // ==========================================
-// 🚀 BASE DE DATOS MAESTRA (ACTUALIZADA DEL WORD)
+//  BASE DE DATOS MAESTRA 
 // ==========================================
 
-// --- POOL UNIVERSAL (Para rellenar) ---
+// --- POOL UNIVERSAL ---
 const UNIVERSAL_CARDS = [
   // NIVEL 1
   { level: 1, type: 'truth', text: '¿Qué parte de mi cuerpo te gusta más?' },
@@ -57,7 +56,6 @@ const UNIVERSAL_CARDS = [
   { level: 1, type: 'truth', text: '¿Qué recuerdo romántico conmigo te excita más?' },
   { level: 1, type: 'dare', text: 'Susúrrame algo sexy al oído.' },
   { level: 1, type: 'dare', text: 'Bésame la frente tiernamente.' },
-  { level: 1, type: 'dare', text: 'Hazme cosquillas por 10 segundos.' },
   
   // NIVEL 2
   { level: 2, type: 'dare', text: 'Si puedes hacerme reír, dame un beso donde quieras.' },
@@ -67,9 +65,12 @@ const UNIVERSAL_CARDS = [
   { level: 2, type: 'dare', text: 'Mete tu mano bajo mi camisa.' },
   { level: 2, type: 'dare', text: 'Hazme un chupetón en el cuello.' },
   { level: 2, type: 'dare', text: 'Quítame una prenda lentamente.' },
-  { level: 2, type: 'dare', text: 'Muérdeme lentamente y toma una foto de la marca (para ti).' },
+  { level: 2, type: 'dare', text: 'Muérdeme lentamente y toma una foto de la marca (Subela a historias).' },
   { level: 2, type: 'truth', text: '¿Te has imaginado teniéndolo conmigo hoy?' },
   { level: 2, type: 'truth', text: '¿Qué fantasía ligera te gustaría probar conmigo?' },
+  { level: 2, type: 'truth', text: '¿Qué parte de tu cuerpo te gusta que más te toque?' },
+  { level: 2, type: 'dare', text: 'Toma 1 trago.' },
+  { level: 2, type: 'dare', text: 'Toma 2 tragos.' },
   
   // NIVEL 3
   { level: 3, type: 'dare', text: 'Hazme un baile sensual por 30 segundos.', time: 30 },
@@ -78,74 +79,99 @@ const UNIVERSAL_CARDS = [
   { level: 3, type: 'dare', text: 'Véndate los ojos 2 minutos.', time: 120 },
   { level: 3, type: 'dare', text: 'Muerde mis pezones suavemente.' },
   { level: 3, type: 'dare', text: 'Besos con lengua profundos por 1 min.', time: 60 },
-  { level: 3, type: 'dare', text: 'Hazme un striptease improvisado (lo que dure una canción).' },
+  { level: 3, type: 'dare', text: 'Hazme un striptease improvisado (lo que dure una canción que elijas).' },
   { level: 3, type: 'dare', text: 'Lame mis pezones por 30 segundos.', time: 30 },
-  { level: 3, type: 'dare', text: 'Véndame los ojos y tócame donde quieras por 90s.', time: 90 },
+  { level: 3, type: 'dare', text: 'Véndame los ojos y tócame donde quieras por 90 segundos.', time: 90 },
   { level: 3, type: 'truth', text: '¿Qué fantasía te gustaría cumplir conmigo?' },
   
   // NIVEL 4
   { level: 4, type: 'dare', text: 'Mastúrbame con la mano.', time: 100 },
   { level: 4, type: 'dare', text: 'Sexo oral por 2 minutos.', time: 120 },
   { level: 4, type: 'dare', text: 'Ponte en cuatro y espera.' },
-  { level: 4, type: 'dare', text: '69 hasta que yo diga basta.' },
+  { level: 4, type: 'dare', text: '69 hasta que alguien diga basta.' },
   { level: 4, type: 'dare', text: 'Mastúrbate frente a mí mirándome a los ojos.', time: 60 },
   { level: 4, type: 'dare', text: 'Mastúrbame con otra parte que no sean las manos.', time: 90 },
   { level: 4, type: 'dare', text: 'Azótame con la mano abierta 3 veces.' },
-  { level: 4, type: 'dare', text: 'Hazme un "Edging" (al borde del orgasmo y para).', time: 90 },
+  { level: 4, type: 'dare', text: 'Hazme un "Edging" (al borde del orgasmo y para (el tiempo es para descansar)).', time: 90 },
   { level: 4, type: 'dare', text: 'Hazme un "Handjob" con aceite/crema corporal.', time: 120 },
   { level: 4, type: 'dare', text: 'Azótame el culo 5 veces.' },
   
   // NIVEL 5
   { level: 5, type: 'dare', text: 'Penetración rápida.', time: 45 },
   { level: 5, type: 'dare', text: 'Penetración fuerte y rápido durante 1 minuto sin terminar.', time: 60 },
+  { level: 5, type: 'dare', text: 'Beso negro con mucha saliba.' },
   { level: 5, type: 'dare', text: 'Termina en mi boca.', isFinisher: true },
   { level: 5, type: 'dare', text: '69 hasta el final.', isFinisher: true },
   { level: 5, type: 'dare', text: 'Córrete dentro.', isFinisher: true },
   { level: 5, type: 'dare', text: 'Anal sin condón (si se puede).', isFinisher: true },
-  { level: 5, type: 'dare', text: 'Hacer sexo anal hasta que alguien diga "basta".' },
-  { level: 5, type: 'dare', text: 'Garganta profunda y tomar foto (privada).', isFinisher: true },
+  { level: 5, type: 'dare', text: 'Sexo anal hasta que alguien diga "basta".' },
+  { level: 5, type: 'dare', text: 'Garganta profunda y tomar foto (privada (¿o no?😈)).', isFinisher: true },
   { level: 5, type: 'dare', text: 'Terminar en la cara del otro.', isFinisher: true },
   { level: 5, type: 'dare', text: 'Hacer un Creampie y no sacarla en 2 minutos.', time: 120, isFinisher: true }
 ];
-
+/////////////////////////////////////////////////////////////////////
 // --- NUEVO JUEGO: ROLEPLAY ROULETTE ---
 const ROLEPLAY_DATA = [
+  //lvl1
+  { level: 1, text: '🎭 Compañeros de clase: "¿Quieres que te ayude con la tarea… o con otra cosa?"' },
+  { level: 1, text: '🎭 Amigos en una fiesta: "Me quedé sin bebida, ¿me invitas a algo más interesante?"' },
+  { level: 1, text: '🎭 Vecinos curiosos: "Se me olvidó el azúcar… ¿puedo pedirte un poco?"' },
+  { level: 1, text: '🎭 Cita en cine: "La película está aburrida… ¿qué hacemos mejor?"' },
+  { level: 1, text: '🎭 Extraños en transporte: "Ups, me senté demasiado cerca… ¿te molesta?"' },
+  { level: 1, text: '🎭 Fotógrafo aficionado y modelo: "Solo quiero unas fotos artísticas… ¿te animas?"' },
+  //lvl2
   { level: 2, text: '🎭 Profesor/a y Alumno/a: "Me he portado mal en clase, ¿cuál es mi castigo?"' },
+  { level: 2, text: '🎭 Entrenador/a y Deportista: "Necesito entrenamiento extra… ¿me ayudas a sudar?"' },
+  { level: 2, text: '🎭 Vecinos curiosos: "Me olvidé la llave, ¿puedo pasar a tu casa?"' },
+  { level: 2, text: '🎭 Fotógrafo/a y Modelo: "Necesito que poses más atrevido/a para la sesión…" ' },
+  //lvl3
   { level: 3, text: '🎭 Jefe/a y Empleado/a: "Te llamé a la oficina para revisar tu desempeño..."' },
   { level: 3, text: '🎭 Desconocidos en un bar: Intenta ligarme desde cero. Si fallas, bebes.' },
+  { level: 3, text: '🎭 Entrenador/a de gimnasio: "Te corrijo la postura… pero necesito tocarte." ' },
+  { level: 3, text: '🎭 Roommates: "La renta está cara… ¿qué me ofreces a cambio?"' },
+  { level: 3, text: '🎭 Cliente y Camarero/a: "El servicio incluye algo más… ¿quieres probar?"' },
+  //lvl4
   { level: 4, text: '🎭 Médico y Paciente: "Doctor/a, me duele aquí abajo..."' },
-  { level: 4, text: '🎭 Ladrón y Policía: Me has atrapado robando. ¿Me esposas o me castigas?' },
-  { level: 5, text: '🎭 Masajista "con final feliz": Empieza profesional, termina sucio.' }
+  { level: 4, text: '🎭 Ladrón y Policía: "Me has atrapado robando. ¿Me esposas o me castigas?"' },
+  { level: 4, text: '🎭 Guardián/a de prisión y Recluso/a: "Tienes que obedecer mis órdenes si quieres salir." ' },
+  { level: 4, text: '🎭 Amo/a y Sumiso/a: "Hoy no tienes derecho a hablar, solo obedecer." ' },
+  { level: 4, text: '🎭 Profesor/a de yoga: "Respira profundo… ahora déjame corregir tu postura íntima." ' },
+  //lvl5
+  { level: 5, text: '🎭 Masajista "con final feliz": Empieza profesional, termina sucio.' },
+  { level: 5, text: '🎭 Actor/a porno y Director/a: "Necesito que lo hagas más intenso para la cámara." ' },
+  { level: 5, text: '🎭 Escort y Cliente VIP: "El paquete incluye todo… ¿quieres el servicio completo?"' },
+  { level: 5, text: '🎭 Maestro/a de BDSM: "Hoy aprenderás a obedecer cada orden sin rechistar." ' },
+  { level: 5, text: '🎭 Estrella de strip club y Cliente: "El baile termina en privado… ¿quieres el show completo?"' },
 ];
-
-// --- BASES DE DATOS ESPECÍFICAS DEL WORD ---
+//////////////////////////////////////////////////////////////////////////////////////
+// --- BASES DE DATOS ESPECÍFICAS ---
 const CARDS_DATA = {
-  couple: [
+  couple: [ //pareja
     ...UNIVERSAL_CARDS,
     { level: 1, type: 'truth', text: '¿Qué fantasía te da vergüenza pedirme?' },
     { level: 1, type: 'truth', text: '¿Qué detalle mío te enamora más en el día a día?' },
-    { level: 2, type: 'dare', text: 'Masaje de cuerpo completo con aceite caliente.' },
+    { level: 2, type: 'dare', text: 'Masaje de cuerpo completo con aceite o cream corporal.' , time: 120 },
     { level: 2, type: 'dare', text: 'Hazme un masaje de pies mientras hablamos.', time: 90 },
     { level: 3, type: 'dare', text: 'Véndame los ojos y usa una pluma o hielo en mi cuerpo.' },
     { level: 3, type: 'dare', text: 'Hazme un striptease sin tocarme (duración de 1 canción).' },
-    { level: 4, type: 'dare', text: 'Amárrame a la cama y hazme lo que quieras.' },
+    { level: 4, type: 'dare', text: 'Amárrame a la cama y hazme lo que quieras por 2 minutos.' , time:120 },
     { level: 4, type: 'dare', text: 'Véndate los ojos, eres mía/o por 3 minutos.', time: 180 },
     { level: 5, type: 'dare', text: 'Hazme un hijo (termina dentro).', isFinisher: true },
     { level: 5, type: 'dare', text: 'Orgasmo simultáneo. Coordínense.', isFinisher: true },
     { level: 5, type: 'dare', text: 'Hazme lo que pienses que más me gusta hasta el orgasmo.', isFinisher: true }
   ],
-  kinky: [
+  kinky: [ //kinky & bdsm
     ...UNIVERSAL_CARDS.filter(c => c.level > 1),
     { level: 1, type: 'truth', text: '¿Te gusta más dominar o ser dominado/a? Detalla.' },
     { level: 2, type: 'dare', text: 'Déjame atarte las manos con un cinturón o corbata.' },
     { level: 3, type: 'dare', text: 'Usa una prenda mía como mordaza por 2 minutos.', time: 120 }, 
     { level: 3, type: 'dare', text: 'Dame 3 nalgadas firmes y di "Gracias Amo/a".' },
-    { level: 4, type: 'dare', text: 'Soy tu dueño/a 10 min. No puedes hablar, solo asentir.' },
+    { level: 4, type: 'dare', text: 'Soy tu dueño/a 50 min. No puedes hablar, solo asentir.' , time:300},
     { level: 4, type: 'dare', text: 'Lame mis pies o axilas (Worship).' },
     { level: 5, type: 'dare', text: 'Orgasmo prohibido (Edging). Te llevaré al borde 3 veces.' },
-    { level: 5, type: 'dare', text: 'Garganta profunda forzada y grabar video (privado).', time: 25 }
+    { level: 5, type: 'dare', text: 'Garganta profunda forzada y grabar video de 25 segundos minimo.', time: 25 }
   ],
-  public: [
+  public: [ //publico
     ...UNIVERSAL_CARDS.filter(c => c.level <= 3),
     { level: 1, type: 'dare', text: 'Susúrrame qué me harías si estuviéramos solos (muy gráfico).' },
     { level: 1, type: 'truth', text: '¿Llevas ropa interior? Muéstramela discretamente.' },
@@ -157,7 +183,7 @@ const CARDS_DATA = {
     { level: 5, type: 'dare', text: 'Sexo rápido aquí mismo (coche/baño). ¡AHORA!', isFinisher: true },
     { level: 5, type: 'dare', text: 'Mastúrbame aquí mismo por 1 minuto disimuladamente.', time: 60 }
   ],
-  fwb: [ 
+  fwb: [ //amigos con beneficios
     ...UNIVERSAL_CARDS, 
     { level: 1, type: 'truth', text: '¿Qué es lo que más disfrutas de "nuestro trato"?' }, 
     { level: 2, type: 'dare', text: 'Dame un beso en el cuello muy sensual.' }, 
@@ -165,7 +191,7 @@ const CARDS_DATA = {
     { level: 4, type: 'dare', text: 'Mastúrbame haciendo “edging” (al borde sin terminar).' }, 
     { level: 5, type: 'dare', text: 'Hacer sexo rápido y termina dentro (o en la boca).', isFinisher: true } 
   ],
-  ons: [ 
+  ons: [ //una sola noche
     ...UNIVERSAL_CARDS.filter(c => c.level >= 2), 
     { level: 1, type: 'truth', text: '¿Qué fue lo primero que te atrajo de mi hoy?' }, 
     { level: 2, type: 'dare', text: 'Bésame apasionadamente por 30 segundos.', time: 30 }, 
@@ -182,15 +208,15 @@ const CARDS_DATA = {
     { level: 4, type: 'dare', text: 'Mastúrbame con la mano que elija.', time: 140 }, 
     { level: 5, type: 'dare', text: 'Hazme sexo intenso como si fuera la ultima vez que me veras.' }
   ],
-  ex: [
+  ex: [ //ex
     ...UNIVERSAL_CARDS,
     { level: 1, type: 'truth', text: '¿Qué recuerdo íntimo nuestro aún te excita?' },
-    { level: 2, type: 'dare', text: 'Dame un beso en el cuello recordando viejos tiempos.' },
+    { level: 2, type: 'dare', text: 'Dame un beso en el cuello apasionado.' },
     { level: 3, type: 'dare', text: 'Hazme un oral breve recordando como en algún momento se dio.' },
     { level: 4, type: 'dare', text: 'Penétrame en la posición que más usábamos.' },
     { level: 5, type: 'dare', text: 'Hazme correrme en la posición que más recuerdas de nosotros.', isFinisher: true }
   ],
-  friends: [ 
+  friends: [  //amigos/fiesta
     { level: 1, type: 'truth', text: '¿Con quién de aquí te atreverías a besar?' }, 
     { level: 2, type: 'dare', text: 'Yo elijo a quien besar por 60 segundos.', time: 60 }, 
     { level: 4, type: 'dare', text: 'Elijo quien me dará un oral rápido en el baño.', time: 180 }, 
@@ -198,34 +224,110 @@ const CARDS_DATA = {
   ],
   default: [...UNIVERSAL_CARDS]
 };
-
-// --- DADOS (Del Word + Anteriores) ---
+///////////////////////////////////////////////////////////
+// --- DADOS ---
 const DICE_ACTIONS = [
-  { text: 'Besar', level: 1 }, { text: 'Acariciar', level: 1 }, { text: 'Soplar', level: 1 }, { text: 'Susurrar', level: 1 },
-  { text: 'Lamer', level: 2 }, { text: 'Morder', level: 2 }, { text: 'Chupar', level: 2 }, { text: 'Apretar', level: 2 },
-  { text: 'Nalguear', level: 3 }, { text: 'Venerar', level: 3 }, { text: 'Vibrar en', level: 3 },
-  { text: 'Escupir', level: 4 }, { text: 'Pellizcar', level: 4 }, { text: 'Dominar', level: 4 }, { text: 'Pies en', level: 4 },
-  { text: 'Asfixiar (Suave)', level: 4 }, { text: 'Pisar', level: 4 },
-  { text: 'Penetrar', level: 5 }, { text: 'Orgasmo en', level: 5, isFinisher: true }, { text: 'Garganta profunda', level: 5 }, { text: 'Follar', level: 5 }, { text: 'Llenar', level: 5, isFinisher: true }
+  { text: 'Besar', level: 1 }, 
+  { text: 'Acariciar', level: 1 }, 
+  { text: 'Soplar', level: 1 }, 
+  { text: 'Rozar', level: 1 },
+  { text: 'Mirar fijamente', level: 1 },
+  //lvl2
+  { text: 'Lamer', level: 2 }, 
+  { text: 'Morder', level: 2 }, 
+  { text: 'Chupar', level: 2 }, 
+  { text: 'Apretar', level: 2 },
+  { text: 'Masajear', level: 2 },
+  { text: 'Desvestir', level: 2 },
+  { text: 'Provocar', level: 2 },
+  //lvl3
+  { text: 'Nalguear', level: 3 }, 
+  { text: 'Venerar', level: 3 }, 
+  { text: 'Vibrar', level: 3 },
+  { text: 'Excitar', level: 3 },
+  { text: 'Frotar fuerte', level: 3 },
+  { text: 'Chupar con fuerza', level: 3 },
+  { text: 'Morder profundo', level: 3 },
+
+  //lvl4
+  { text: 'Escupir', level: 4 }, 
+  { text: 'Pellizcar', level: 4 }, 
+  { text: 'Dominar', level: 4 }, 
+  { text: 'Pies', level: 4 },
+  { text: 'Asfixiar (Suave)', level: 4 }, 
+  { text: 'Pisar', level: 4 },
+  { text: 'Marcar con uñas', level: 4 },
+  { text: 'Azotar', level: 4 },
+  //lvl5
+  { text: 'Penetrar', level: 5 }, 
+  { text: 'Orgasmo', level: 5, isFinisher: true }, 
+  { text: 'Garganta profunda', level: 5 }, 
+  { text: 'Follar', level: 5 }, 
+  { text: 'Llenar', level: 5, isFinisher: true },
+  { text: 'Romper límites', level: 5 },
+  { text: 'Exprimir hasta el final', level: 5, isFinisher: true }
 ];
 const DICE_BODYPARTS = [
-  { text: 'Cuello', level: 1 }, { text: 'Oreja', level: 1 }, { text: 'Manos', level: 1 }, { text: 'Labios', level: 1 },
-  { text: 'Pezones', level: 2 }, { text: 'Muslos', level: 2 }, { text: 'Espalda Baja', level: 2 }, { text: 'Ombligo', level: 2 },
-  { text: 'Genitales', level: 3 }, { text: 'Trasero', level: 3 }, { text: 'Perineo', level: 3 }, { text: 'Entrepierna', level: 3 }, { text: 'Lengua', level: 3 },
-  { text: 'Pies', level: 4 }, { text: 'Garganta', level: 4 }, { text: 'Ano', level: 4 }, { text: 'Axilas', level: 4 },
-  { text: 'Donde quieras', level: 5 }, { text: 'Boca', level: 5 }, { text: 'Adentro', level: 5 }, { text: 'Cara', level: 5 }
+  //lvl1
+  { text: 'Cuello', level: 1 }, 
+  { text: 'Oreja', level: 1 }, 
+  { text: 'Manos', level: 1 }, 
+  { text: 'Labios', level: 1 },
+  { text: 'Cabello', level: 1 },
+  { text: 'Espalda Alta', level: 1 },
+  //lvl2
+  { text: 'Pezones', level: 2 }, 
+  { text: 'Muslos', level: 2 }, 
+  { text: 'Espalda Baja', level: 2 }, 
+  { text: 'Ombligo', level: 2 },
+  { text: 'Cadera', level: 2 },
+  { text: 'Costados', level: 2 },
+  //lvl3
+  { text: 'Genitales', level: 3 }, 
+  { text: 'Trasero', level: 3 }, 
+  { text: 'Perineo', level: 3 }, 
+  { text: 'Entrepierna', level: 3 }, 
+  { text: 'Lengua', level: 3 },
+  { text: 'Clítoris/Glande', level: 3 },
+  //lvl4
+  { text: 'Pies', level: 4 }, 
+  { text: 'Garganta', level: 4 }, 
+  { text: 'Ano', level: 4 }, 
+  { text: 'Axilas', level: 4 },
+  { text: 'Interior muslos', level: 4 },
+  { text: 'Espalda completa', level: 4 },
+  //lvl5
+  { text: 'Donde quieras', level: 5 }, 
+  { text: 'Boca', level: 5 }, 
+  { text: 'Adentro', level: 5 }, 
+  { text: 'Cara', level: 5 }
+  { text: 'Pechos', level: 5 },
+  { text: 'Trasero profundo', level: 5 }
+  
 ];
-
+//Dados Nivel Mas Caliente
 const CLIMAX_ACTIONS = [
-  { text: 'Terminar en', level: 5 }, { text: 'Correrse en', level: 5 }, { text: 'Llenar', level: 5 },
-  { text: 'Explotar en', level: 5 }, { text: 'Dejarlo todo en', level: 5 }
+  { text: 'Terminar', level: 5 }, 
+  { text: 'Correrse', level: 5 }, 
+  { text: 'Llenar', level: 5 },
+  { text: 'Explotar', level: 5 }, 
+  { text: 'Dejarlo todo', level: 5 }
+  { text: 'Inundar', level: 5 },
+  { text: 'Descargar completo', level: 5 }
 ];
 const CLIMAX_BODYPARTS = [
-  { text: 'Boca', level: 5 }, { text: 'Adentro', level: 5 }, { text: 'Pechos', level: 5 }, 
-  { text: 'Cara', level: 5 }, { text: 'Trasero', level: 5 }, { text: 'Garganta', level: 5 }
-];
+  { text: 'Boca', level: 5 }, 
+  { text: 'Adentro', level: 5 }, 
+  { text: 'Pechos', level: 5 }, 
+  { text: 'Cara', level: 5 }, 
+  { text: 'Trasero', level: 5 }, 
+  { text: 'Garganta', level: 5 }
+  { text: 'Espalda', level: 5 },
+  { text: 'Cabello', level: 5 }
 
-// --- KAMASUTRA (NUEVAS DEL WORD) ---
+];
+/////////////////////////////////////////////////////////////////////
+// --- KAMASUTRA  ---
 const KAMA_POSITIONS = [
   { name: "Cucharita", level: 1, desc: "Intimidad lateral.", img: "spoon.png" },
   { name: "Loto", level: 1, desc: "Sentados frente a frente.", img: "lotus.png" },
@@ -259,47 +361,105 @@ const KAMA_POSITIONS = [
   { name: "De Pie", level: 5, desc: "Contra la pared. Rápido.", img: "standing.png" },
   { name: "El Trono", level: 5, desc: "Él sentado, ella encima de espaldas.", img: "throne.png" }
 ];
-
+/////////////////////////////////////////////////////////////////////////////
+//ruleta rusa
 const ROULETTE_DB = [
-  { text: "Bebe un trago.", level: 1 }, { text: "Beso de 10s.", level: 1 },
-  { text: "Cuenta un secreto.", level: 1 }, { text: "Quítate la camisa.", level: 2 }, 
-  { text: "Nalgada seca.", level: 2 }, { text: "Beso con lengua.", level: 2 },
-  { text: "Quítate ropa interior.", level: 3 }, { text: "Oral 1 minuto.", level: 3 },
-  { text: "Hielo en genitales.", level: 3 }, { text: "Chupar dedos del pie.", level: 4 }, 
-  { text: "Azotes con cinturón.", level: 4 }, { text: "Exponerse 10s.", level: 4 },
-  { text: "Nalgada muy fuerte.", level: 4 },
-  { text: "Penetración anal.", level: 5 }, { text: "Tragar todo.", level: 5, isFinisher: true },
-  { text: "Hacer un Creampie.", level: 5, isFinisher: true }, { text: "Sexo anal obligatorio.", level: 5, isFinisher: true }
-];
+  //lvl1
+  { text: "Bebe un trago.", level: 1 }, 
+  { text: "Beso de 10s.", level: 1 },
+  { text: "Cuenta un secreto.", level: 1 },
+  { text: "Beso en la mejilla con ternura.", level: 1 },
+  { text: "Susurra algo sexy al oído.", level: 1 },
+  { text: "Haz un selfie gracioso juntos.", level: 1 },
+  //lvl2
+  { text: "Quítate la camisa.", level: 2 }, 
+  { text: "Nalgada seca.", level: 2 }, 
+  { text: "Beso con lengua.", level: 2 },
+  { text: "Muérdeme suavemente el labio.", level: 2 },
+  { text: "Hazme un masaje en el cuello.", level: 2 },
+  { text: "Quítame una prenda lentamente.", level: 2 },
+  { text: "Hazme un baile sexy de 30 segundos.", level: 2 , time: 30 },
 
+  //lvl3
+  { text: "Quítate ropa interior.", level: 3 }, 
+  { text: "Oral 1 minuto.", level: 3 },
+  { text: "Hielo en genitales.", level: 3 }, 
+  { text: "Hazme un beso profundo con lengua por 1 min.", level: 3 , time: 60 },
+  { text: "Muerde mis pezones suavemente.", level: 3 },
+  { text: "Hazme un masaje en la entrepierna por encima de la ropa.", level: 3 },
+  { text: "Hazme un striptease improvisado.", level: 3 , time: 180 },
+
+  //lvl4
+  { text: "Chupar dedos del pie.", level: 4 }, 
+  { text: "Azotes con cinturón.", level: 4 }, 
+  { text: "Exponerse 10s.", level: 4 },
+  { text: "Nalgada muy fuerte.", level: 4 },
+  { text: "Hazme un oral hasta que yo diga basta.", level: 4 },
+  { text: "Amárrame las manos por 2 minutos.", level: 4 , time: 120 },
+  { text: "Hazme un edging (llevarme al borde y detenerte).", level: 4 },
+
+  //lvl5
+  { text: "Penetración anal.", level: 5 }, 
+  { text: "Tragar todo.", level: 5, isFinisher: true },
+  { text: "Hacer un Creampie.", level: 5, isFinisher: true }, 
+  { text: "Sexo anal obligatorio.", level: 5, isFinisher: true }
+  { text: "Orgasmo simultáneo obligatorio.", level: 5, isFinisher: true },
+  { text: "Facial completo (terminar en la cara).", level: 5, isFinisher: true },
+  { text: "Garganta profunda prolongado hasta el final.", level: 5, isFinisher: true }
+];
+/////////////////////////////////////////////////////////////////////////////////
+//yo nunca nunca
 const NEVER_DATA = [
   // L1
   { text: "Yo nunca he besado en la primera cita.", level: 1 }, 
   { text: "Yo nunca he stalkeado a un ex.", level: 1 },
   { text: "Yo nunca he mentido sobre mi edad.", level: 1 },
+  { text: "Yo nunca he enviado un mensaje borracho.", level: 1 },
+  { text: "Yo nunca he tenido un crush con un profesor/a.", level: 1 },
+  { text: "Yo nunca he fingido estar ocupado para evitar a alguien.", level: 1 },
+  { text: "Yo nunca he usado una excusa tonta para no salir.", level: 1 },
   // L2
   { text: "Yo nunca he mandado nudes.", level: 2 }, 
   { text: "Yo nunca he tenido sexo en la playa.", level: 2 },
   { text: "Yo nunca he subido una foto hot por error.", level: 2 },
   { text: "Yo nunca me he excitado en público.", level: 2 },
   { text: "Yo nunca he usado juguetes sexuales.", level: 2 },
+  { text: "Yo nunca he tenido un sueño erótico con alguien cercano.", level: 2 },
+  { text: "Yo nunca he visto porno con otra persona.", level: 2 },
+  { text: "Yo nunca he tenido sexting con alguien desconocido.", level: 2 },
   // L3
   { text: "Yo nunca he tenido sexo en un lugar público.", level: 3 }, 
   { text: "Yo nunca he fingido un orgasmo.", level: 3 },
   { text: "Yo nunca he tenido cibersexo.", level: 3 },
   { text: "Yo nunca he tenido sexo anal.", level: 3 },
   { text: "Yo nunca he usado comida en la cama.", level: 3 },
+  { text: "Yo nunca he tenido sexo en un coche.", level: 3 },
+  { text: "Yo nunca he probado el sexo telefónico.", level: 3 },
+  { text: "Yo nunca he tenido sexo con alguien mayor por más de 8 años.", level: 3 },
+
   // L4
   { text: "Yo nunca he tenido un fetiche de pies.", level: 4 }, 
   { text: "Yo nunca he sido infiel.", level: 4 },
   { text: "Yo nunca me he grabado teniendo sexo.", level: 4 },
   { text: "Yo nunca he tenido sexo con alguien cuyo nombre no sabía.", level: 4 },
+  { text: "Yo nunca he practicado BDSM.", level: 4 },
+  { text: "Yo nunca he usado disfraces sexuales (cuenta lenceria).", level: 4 },
+  { text: "Yo nunca he tenido sexo con más de una persona en la misma noche.", level: 4 },
+  { text: "Yo nunca he probado el intercambio de parejas.", level: 4 },
+
   // L5
   { text: "Yo nunca he participado en una orgía.", level: 5 }, 
   { text: "Yo nunca he probado mis propios fluidos.", level: 5 },
   { text: "Yo nunca he pagado por sexo.", level: 5 },
   { text: "Yo nunca he tenido una ETS.", level: 5 }
+  { text: "Yo nunca he hecho un trío.", level: 5 },
+  { text: "Yo nunca he tenido sexo sin protección con un desconocido.", level: 5 },
+  { text: "Yo nunca he probado prácticas de dominación extrema.", level: 5 },
+  { text: "Yo nunca he tenido sexo en estado de sobriedad cero (muy borracho/a).", level: 5 }
+
 ];
+////////////////////////////////////////////////////////////////////////////////////
+//bonus
 const BONUS_DATA = [
   { icon: <Utensils/>, title: "Antojo", text: "Pidan comida a domicilio ahora mismo. Se lo han ganado." },
   { icon: <Heart/>, title: "Ducha Juntos", text: "Vayan a ducharse. Enjabónense mutuamente sin intención sexual, solo cuidado." },
@@ -315,26 +475,86 @@ const BONUS_DATA = [
   { icon: <RotateCcw/>, title: "Juego de Memoria", text: "Recordar qué reto fue el más excitante y repetirlo la próxima vez." }, // NUEVO
   { icon: <MessageCircle/>, title: "Confesiones Finales", text: "Cada uno revela algo que nunca había dicho." }, // NUEVO
   { icon: <Flag/>, title: "Plan Secreto", text: "Escribir en papel dónde será el próximo encuentro y guardarlo." } // NUEVO
-];
+  { icon: <Music/>, title: "Playlist Sexy", text: "Pongan una canción y bailen abrazados, sin importar cómo se vean." },
+  { icon: <BookOpen/>, title: "Historia Erótica", text: "Inventen juntos una mini historia erótica para la próxima vez." },
+  { icon: <Zap/>, title: "Reto Flash", text: "Cada uno escribe un reto rápido en papel y lo guarda para la próxima sesión." },
+  { icon: <Smile/>, title: "Selfie Tonto", text: "Tomen una foto graciosa en la cama para recordar el momento con humor." },
+  { icon: <Moon/>, title: "Noche Diferente", text: "Decidan un lugar inesperado para dormir juntos (sofá, piso con cobijas, terraza)." },
+  { icon: <Coffee/>, title: "Desayuno", text: "Planeen qué desayunarán mañana y quién lo prepara, agreguen algo extra si desean." },
+  { icon: <Film/>, title: "Mini Video", text: "Graben un clip corto (sin mostrar todo) como recuerdo privado." },
+  { icon: <Gift/>, title: "Sorpresa", text: "Cada uno debe preparar una sorpresa para la próxima sesión (puede ser juguete, ropa, comida)." },
+  { icon: <Clock/>, title: "Cuenta Regresiva", text: "Pongan fecha exacta para repetir la experiencia y márquenla en calendario." }
 
+];
+/////////////////////////////////////////////////////////////////////////
+//papparazzi X
 const PHOTO_DATA = [
-  { level: 1, text: 'Modo Artístico: Foto con sombras y siluetas.' },
+  //lvl1
+  { level: 1, text: 'Foto con sombras y siluetas.' },
   { level: 1, text: 'Selfie sacando la lengua juntos.' },
   { level: 1, text: 'Foto de nuestras manos.' },
+  { level: 1, text: 'Selfie con beso en la frente.' },
+  { level: 1, text: 'Foto artística en blanco y negro.' },
+  { level: 1, text: 'Selfie haciendo caras ridículas.' },
+  { level: 1, text: 'Foto de pies juntos en la cama.' },
+  //lvl 2
   { level: 2, text: 'Mirror Selfie levantando la camisa.' },
   { level: 2, text: 'Foto detalle: Mano apretando muslo.' },
-  { level: 2, text: 'Modo Humor: Foto ridícula en ropa interior.' },
-  { level: 2, text: 'Modo Humor: Poses absurdas.' },
-  { level: 3, text: 'Modo Fetish: Foto de pies o manos.' },
-  { level: 3, text: 'Modo Fetish: Foto de ropa interior usada.' },
-  { level: 3, text: 'Foto de marca de beso/mordida.' },
-  { level: 4, text: 'Modo Fetish: Foto de juguetes.' },
-  { level: 4, text: 'Nudes: Foto de genitales con flash.' },
-  { level: 5, text: 'Modo Story: Secuencia de 3 fotos contando una historia.' },
-  { level: 5, text: 'Video: Penetración desde ángulo oculto.' },
-  { level: 5, text: 'Foto "Creamy": Interior después de terminar.', isFinisher: true }
-];
+  { level: 2, text: 'Foto ridícula en ropa interior.' },
+  { level: 2, text: 'Poses absurdas.' },
+  { level: 2, text: 'Foto de labios rozando sin beso.' },
+  { level: 2, text: 'Foto de cuello con marca de beso.' },
+  { level: 2, text: 'Foto de cuello con marca de chupeton.' },
+  { level: 2, text: 'Selfie con ropa interior visible discretamente.' },
 
+  //lvl3
+  { level: 3, text: 'Foto de pies o manos.' },
+  { level: 3, text: 'Foto de ropa interior usada.' },
+  { level: 3, text: 'Foto de marca de beso/mordida.' },
+  { level: 3, text: 'Foto de espalda desnuda con luz tenue.' },
+  { level: 3, text: 'Foto de boca abierta con lengua afuera.' },
+  { level: 3, text: 'Foto de ropa interior bajada parcialmente.' },
+  { level: 3, text: 'Foto artística de silueta desnuda en espejo.' },
+
+  //lvl4
+  { level: 4, text: 'Foto de juguetes.' },
+  { level: 4, text: 'Foto de genitales con flash.' },
+  { level: 4, text: 'Foto POV desde arriba durante oral.' },
+  { level: 4, text: 'Foto con mordaza o manos atadas.' },
+  { level: 4, text: 'Foto de nalgas rojas después de azote.' },
+  { level: 4, text: 'Foto con ropa interior completamente fuera.' },
+  { level: 4, text: 'Foto con lubricante/juguete en acción.' },
+
+  //lvl5
+  { level: 5, text: 'Secuencia de 3 fotos contando una historia.' },
+  { level: 5, text: 'Penetración desde ángulo oculto.' },
+  { level: 5, text: 'Foto: Interior después de terminar.', isFinisher: true }
+  { level: 5, text: 'Video corto de gemidos o respiración fuerte.' },
+  { level: 5, text: 'Foto POV durante penetración.' },
+  { level: 5, text: 'Foto de ambos sudados abrazados después del sexo.' }
+  { level: 5, text: 'Foto POV del último empuje antes del clímax.' },
+  { level: 5, text: 'Foto artística del “money shot” con luz tenue.' },
+  { level: 5, text: 'Secuencia de fotos mostrando el orgasmo progresivo.' },
+  { level: 5, text: 'Foto de ambos sonriendo exhaustos en la cama.' },
+  { level: 5, text: 'Foto artística con sábanas revueltas y cuerpos entrelazados.' },
+  { level: 5, text: 'Foto íntima de manos entrelazadas durante el clímax.' },
+  { level: 5, text: 'Foto de espejo mostrando el cuerpo completo post-acto.' },
+  { level: 5, text: 'Foto artística de gotas de sudor en la piel.' },
+  { level: 5, text: 'Foto de beso profundo justo después de terminar.' },
+  { level: 5, text: 'Foto de la cama desordenada como recuerdo del momento.' },
+  { level: 5, text: 'Foto artística de la silueta desnuda contra la ventana después del acto.' }
+  { level: 5, text: 'Foto macro del semen corriendo por la piel.' },
+  { level: 5, text: 'Foto con la boca abierta recibiendo todo.' },
+  { level: 5, text: 'Foto del ano justo después de la penetración.' },
+  { level: 5, text: 'Foto con la lengua lamiendo restos del clímax.' },
+  { level: 5, text: 'Foto del condón usado lleno, en la mano.' },
+  { level: 5, text: 'Foto con la cara cubierta de semen (facial completo).' },
+  { level: 5, text: 'Foto del interior de la ropa interior mojada.' },
+  { level: 5, text: 'Foto con los glúteos abiertos mostrando el interior húmedo.' },
+  { level: 5, text: 'Foto POV del pene aún dentro después del orgasmo.' }
+
+];
+/////////////////////////////////////////////////////////////////////////////////
 // --- COMPONENTES UI ---
 const Button = ({ children, onClick, className = "", variant = "primary", disabled = false, size = "normal" }) => {
   const sizeClasses = size === "small" ? "py-2 px-4 text-sm" : "w-full font-bold py-4 rounded-2xl shadow-lg";
@@ -345,7 +565,7 @@ const Button = ({ children, onClick, className = "", variant = "primary", disabl
 const HeatSelector = ({ currentLevel, setLevel }) => (<div className="grid grid-cols-6 gap-1 bg-gray-900/80 p-2 rounded-2xl mb-4 border border-gray-700">{HEAT_LEVELS.map((h) => (<button key={h.level} onClick={() => setLevel(h.level)} className={`flex flex-col items-center justify-center py-2 rounded-lg transition-all ${currentLevel === h.level ? 'bg-gray-800 border border-gray-500 shadow-white/10 shadow-lg scale-105' : 'opacity-40 hover:opacity-70'}`}><span className="text-lg">{h.icon}</span><span className={`text-[8px] font-bold uppercase mt-1 ${h.color}`}>{h.level === 'all' ? 'RAND' : `NVL ${h.level}`}</span></button>))}</div>);
 const CardItem = ({ label, desc, icon: Icon, onClick, color, bg }) => (<div onClick={onClick} className="w-full bg-gray-900/80 border border-gray-800 rounded-2xl p-4 flex items-start gap-4 hover:border-pink-500/50 transition-all active:scale-95 cursor-pointer relative overflow-hidden group min-h-[80px]"><div className={`absolute inset-0 ${bg} opacity-5 group-hover:opacity-10 transition-opacity`}></div><div className={`p-3 rounded-xl shrink-0 ${bg} ${color}`}><Icon size={28} /></div><div className="flex-1 flex flex-col justify-center z-10"><h3 className="text-lg font-bold text-gray-100 leading-snug mb-1">{label}</h3><p className="text-sm text-gray-400 leading-relaxed">{desc}</p></div></div>);
 const PenaltyBadge = ({ level }) => { let t="", c=""; if (level <= 2) { t = "Castigo: 1 Trago"; c = "bg-blue-500/20 text-blue-300 border-blue-500/50"; } else if (level <= 4) { t = "Castigo: 1 Shot"; c = "bg-orange-500/20 text-orange-300 border-orange-500/50"; } else { t = "Castigo: 2 Shots / Fondo"; c = "bg-red-600/20 text-red-300 border-red-500/50 animate-pulse"; } return (<div className={`mt-4 mb-2 px-4 py-1 rounded-full border text-xs font-bold uppercase tracking-wide ${c}`}>{t}</div>); };
-
+//////////////////////////////////////////////////////////////////////////////////////
 // --- APP PRINCIPAL ---
 export default function App() {
   const [screen, setScreen] = useState('home'); 
@@ -427,7 +647,7 @@ export default function App() {
   const pullTrigger = () => { if (rouletteStatus !== 'playing') return; setRouletteStatus('tension'); playSound('click'); setTimeout(() => { const result = rouletteChambers[currentChamberIdx]; const newShots = [...shotsFired]; if (result === 'bullet') { playSound('bang'); setRouletteStatus('dead'); newShots.push('bang'); setShotsFired(newShots); let deaths = heatLevel === 'all' ? ROULETTE_DB.filter(r => r.level >= Math.max(1, currentSessionHeat)) : ROULETTE_DB.filter(r => r.level <= heatLevel); if (deaths.length === 0) deaths = ROULETTE_DB; const chosen = deaths[Math.floor(Math.random() * deaths.length)]; setPunishment(chosen?.text || "Bebe todo."); setCurrentSessionHeat(chosen?.level || 1); if (chosen?.isFinisher) setShowBonusButton(true); else setShowBonusButton(false); } else { playSound('click'); setRouletteStatus('safe'); newShots.push('safe'); setShotsFired(newShots); setPunishment("¡Salvado! Pasa el turno."); setTimeout(() => { setRouletteStatus('playing'); setCurrentChamberIdx(p => (p+1)%6); }, 1500); } }, 1000); };
 
   const GameFooter = () => (<div className="p-6 pb-20 flex flex-col gap-3 flex-none">{showBonusButton && ( <Button onClick={showBonusScreen} variant="gold" className="animate-bounce"> <Sparkles className="w-5 h-5"/> ✨ DESBLOQUEAR BONUS </Button> )}<Button onClick={showBonusScreen} variant="secondary" size="small" className="opacity-70 hover:opacity-100"> <Flag className="w-4 h-4"/> CLÍMAX / FINALIZAR </Button></div>);
-
+//////////////////////////////////////////////////////////////////////////
   // Renders
   const renderHome = () => (
     <div className="flex flex-col h-full justify-between pt-12 pb-6 animate-fade-in bg-[#0a0a0a] overflow-y-auto">
@@ -468,7 +688,16 @@ export default function App() {
         {screen === 'play-roulette' && renderRoulette()}
         {screen === 'play-roleplay' && renderCardBase('Roleplay Roulette', 'Generar Rol', drawRoleplay)}
       </div>
-      <style>{`@keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } } .animate-fade-in { animation: fade-in 0.4s ease-out forwards; } @keyframes flip-in { from { transform: rotateY(90deg) scale(0.9); opacity: 0; } to { transform: rotateY(0) scale(1); opacity: 1; } } .animate-flip-in { animation: flip-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); } .perspective-1000 { perspective: 1000px; } .rotate-x-12 { transform: rotateX(12deg); } .-rotate-x-12 { transform: rotateX(-12deg); } @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } } .animate-shake { animation: shake 0.5s; }`}</style>
+      <style>{`
+        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
+        @keyframes flip-in { from { transform: rotateY(90deg) scale(0.9); opacity: 0; } to { transform: rotateY(0) scale(1); opacity: 1; } }
+        .animate-flip-in { animation: flip-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .perspective-1000 { perspective: 1000px; }
+        .rotate-x-12 { transform: rotateX(12deg); }
+        .-rotate-x-12 { transform: rotateX(-12deg); }
+        @keyframes shake { 0% { transform: translate(1px, 1px) rotate(0deg); } 10% { transform: translate(-1px, -2px) rotate(-1deg); } 20% { transform: translate(-3px, 0px) rotate(1deg); } 30% { transform: translate(3px, 2px) rotate(0deg); } 40% { transform: translate(1px, -1px) rotate(1deg); } 50% { transform: translate(-1px, 2px) rotate(-1deg); } 60% { transform: translate(-3px, 1px) rotate(0deg); } 70% { transform: translate(3px, 1px) rotate(-1deg); } 80% { transform: translate(-1px, -1px) rotate(1deg); } 90% { transform: translate(1px, 2px) rotate(0deg); } 100% { transform: translate(1px, -2px) rotate(-1deg); } } .animate-shake { animation: shake 0.5s; }
+      `}</style>
     </div>
   );
 }
