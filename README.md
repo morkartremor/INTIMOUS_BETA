@@ -1,70 +1,172 @@
-# Getting Started with Create React App
+🚀 Plan Maestro del Proyecto: INTIMOUS
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Metodología: AGILE / SCRUM (Adaptado a Solo-Dev)
+Objetivo: Lanzar y mantener la aplicación líder en juegos de intimidad para parejas y grupos.
+Versión Actual: v44.0 (Alpha Estable)
 
-## Available Scripts
+1. 🏗️ Arquitectura del Proyecto
 
-In the project directory, you can run:
+🛠️ Tech Stack (Tecnologías)
 
-### `npm start`
+Frontend: React.js (Vite) + Tailwind CSS.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Mobile Wrapper: Capacitor.js (Android).
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Base de Datos: Local (JSON/Arrays en código) - Optimizado para velocidad y offline.
 
-### `npm test`
+Control de Versiones: Git & GitHub.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Despliegue Web: Vercel.
 
-### `npm run build`
+Despliegue Móvil: Google Play Store.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. 🔄 Flujo de Trabajo (Workflow)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Para mantener el orden, utilizaremos ciclos de trabajo llamados Sprints (carreras cortas de 1-2 semanas).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+El Ciclo de Vida de una Actualización:
 
-### `npm run eject`
+📝 Planificación (Backlog): Escribir qué se va a hacer (ej. "Agregar modo Kinky").
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+💻 Desarrollo: Escribir el código en una rama local (no en la principal).
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+🧪 QA (Quality Assurance):
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Prueba en navegador (Chrome modo móvil).
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Prueba en dispositivo físico (Android APK).
 
-## Learn More
+Check: ¿Se rompe el diseño? ¿Los textos caben? ¿La lógica es correcta?
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+🚀 Despliegue (Release):
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+git push a GitHub (Backup).
 
-### Code Splitting
+Generar APK en Android Studio.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Subir a Google Play Console (cuando esté activa).
 
-### Analyzing the Bundle Size
+3. 🗺️ Roadmap (Hoja de Ruta)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+🟢 Fase 1: MVP (Producto Mínimo Viable) - [COMPLETADO] ✅
 
-### Making a Progressive Web App
+[x] Estructura base de la app.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+[x] Juegos principales (Dados, Verdad o Reto, Kamasutra).
 
-### Advanced Configuration
+[x] Sistema de Niveles de Intensidad (1-5).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+[x] Base de datos inicial.
 
-### Deployment
+🟡 Fase 2: Refinamiento y Contenido - [EN PROCESO] 🚧
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+[x] Expansión masiva de base de datos (Word integrado).
 
-### `npm run build` fails to minify
+[x] Nuevos juegos: Roleplay, Paparazzi X.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+[x] Corrección de UI para móviles (Scroll, textos cortados).
+
+[ ] Tarea Pendiente: Subir imágenes reales a la carpeta public para Kamasutra y Paparazzi.
+
+[ ] Tarea Pendiente: Pruebas exhaustivas de UX en diferentes tamaños de celular.
+
+🟠 Fase 3: Preparación para el Lanzamiento (Pre-Launch)
+
+[ ] Crear cuenta de Desarrollador Google ($25 USD).
+
+[ ] Diseño de Icono final y Screenshots promocionales.
+
+[ ] Redacción de textos legales (Política de Privacidad simple).
+
+[ ] Configuración de ficha en Play Store.
+
+🔴 Fase 4: Monetización y Expansión (Post-Launch)
+
+[ ] Integración de AdMob (Banners).
+
+[ ] Sistema de Pagos (IAP) para quitar anuncios.
+
+[ ] Traducir app a Inglés (Internacionalización).
+
+4. 🗂️ Backlog de Tareas (Tu "To-Do" List Actual)
+
+Estas son las tareas técnicas inmediatas para la Versión 45.0:
+
+Prioridad
+
+Tarea
+
+Descripción
+
+Estado
+
+🔴 Alta
+
+Imágenes Assets
+
+Conseguir o generar los iconos PNG para las 30+ posiciones del Kamasutra y guardarlos en public/.
+
+Pendiente
+
+🔴 Alta
+
+Test de Campo
+
+Instalar el APK v44 en un celular real y jugar una partida completa de cada juego para verificar errores.
+
+Pendiente
+
+🟡 Media
+
+Icono Adaptativo
+
+Generar el icono final en Android Studio (Image Asset) para que no salga el androide verde.
+
+Pendiente
+
+🟡 Media
+
+Limpieza de Código
+
+Verificar que no haya variables sin usar (warnings de ESLint) antes de subir a producción.
+
+Pendiente
+
+🟢 Baja
+
+Redes Sociales
+
+Crear cuentas de Instagram/TikTok para apartar el nombre de usuario.
+
+Pendiente
+
+5. 🛡️ Protocolo de Seguridad (Backups)
+
+Para evitar desastres, sigue esta regla de oro:
+
+"Si funciona, guárdalo."
+
+Commit Diario: Al terminar el día, siempre ejecuta:
+
+git add .
+git commit -m "Avance del dia: descripcion breve"
+git push origin main
+
+
+Backup de Versión (Milestone): Al terminar una versión importante (como la v44), crea un ZIP del proyecto (sin node_modules) y súbelo a la nube (Drive/OneDrive).
+
+6. 🎨 Guía de Estilo (Design System)
+
+Para mantener la consistencia visual:
+
+Paleta de Colores:
+
+Fondo: bg-black / bg-gray-900
+
+Acentos: text-rose-500 (Pasión), text-purple-500 (Kinky), text-emerald-500 (Público).
+
+Tipografía: Sans-serif (Default de Tailwind).
+
+Iconos: Lucide React (Estilo lineal, tamaño 24-32px).
+
+Bordes: Redondeados rounded-2xl o rounded-3xl para sensación moderna y táctil.
