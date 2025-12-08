@@ -107,7 +107,13 @@ const UNIVERSAL_CARDS = [
   { level: 5, type: 'dare', text: 'Sexo anal hasta que alguien diga "basta".' },
   { level: 5, type: 'dare', text: 'Garganta profunda y tomar foto (privada (¿o no?😈)).', isFinisher: true },
   { level: 5, type: 'dare', text: 'Terminar en la cara del otro.', isFinisher: true },
-  { level: 5, type: 'dare', text: 'Hacer un Creampie y no sacarla en 2 minutos.', time: 120, isFinisher: true }
+  { level: 5, type: 'dare', text: 'Hacer un Creampie y no sacarla en 2 minutos.', time: 120, isFinisher: true },
+  // Additional cards for more variety
+  { level: 1, type: 'truth', text: '¿Cuál es tu recuerdo favorito de nosotros?' },
+  { level: 2, type: 'dare', text: 'Envíame un beso por mensaje de texto.' },
+  { level: 3, type: 'dare', text: 'Dime un secreto que nunca le has contado a nadie.', time: 60 },
+  { level: 4, type: 'dare', text: 'Hazme un masaje con aceite en la espalda.', time: 180 },
+  { level: 5, type: 'dare', text: 'Prueba una posición nueva que nunca hemos hecho.', isFinisher: true }
 ];
 /////////////////////////////////////////////////////////////////////
 // --- NUEVO JUEGO: ROLEPLAY ROULETTE ---
@@ -307,13 +313,13 @@ const DICE_BODYPARTS = [
 ];
 //Dados Nivel Mas Caliente
 const CLIMAX_ACTIONS = [
-  { text: 'Terminar', level: 5 }, 
-  { text: 'Correrse', level: 5 }, 
-  { text: 'Llenar', level: 5 },
-  { text: 'Explotar', level: 5 }, 
-  { text: 'Dejarlo todo', level: 5 },
-  { text: 'Inundar', level: 5 },
-  { text: 'Descargar completo', level: 5 }
+  { text: 'Terminar', level: 5, isFinisher: true },
+  { text: 'Correrse', level: 5, isFinisher: true },
+  { text: 'Llenar', level: 5, isFinisher: true },
+  { text: 'Explotar', level: 5, isFinisher: true },
+  { text: 'Dejarlo todo', level: 5, isFinisher: true },
+  { text: 'Inundar', level: 5, isFinisher: true },
+  { text: 'Descargar completo', level: 5, isFinisher: true }
 ];
 const CLIMAX_BODYPARTS = [
   { text: 'Boca', level: 5 }, 
@@ -359,7 +365,13 @@ const KAMA_POSITIONS = [
   { name: "La Araña", level: 5, desc: "Entrelazados complejos.", img: "spider.png" },
   { name: "El Helicóptero", level: 5, desc: "Girando sobre el pene.", img: "helicopter.png" },
   { name: "De Pie", level: 5, desc: "Contra la pared. Rápido.", img: "standing.png" },
-  { name: "El Trono", level: 5, desc: "Él sentado, ella encima de espaldas.", img: "throne.png" }
+  { name: "El Trono", level: 5, desc: "Él sentado, ella encima de espaldas.", img: "throne.png" },
+  // Additional positions for more variety
+  { name: "El Cangrejo", level: 2, desc: "Piernas flexionadas, movimiento lateral.", img: "crab.png" },
+  { name: "El Cangrejo Invertido", level: 3, desc: "Ella arriba, piernas flexionadas.", img: "rev_crab.png" },
+  { name: "El Cangrejo Anal", level: 5, desc: "Acceso trasero con piernas flexionadas.", img: "anal_crab.png" },
+  { name: "El Cangrejo de Pie", level: 4, desc: "De pie, una pierna arriba.", img: "standing_crab.png" },
+  { name: "El Cangrejo en Mesa", level: 3, desc: "Sobre mesa, piernas flexionadas.", img: "table_crab.png" }
 ];
 /////////////////////////////////////////////////////////////////////////////
 //ruleta rusa
@@ -599,7 +611,7 @@ export default function App() {
 
   const playSound = (type) => { if (navigator.vibrate) { if (type === 'bang') navigator.vibrate([500, 200, 500]); else if (type === 'click') navigator.vibrate(50); else if (type === 'spin') navigator.vibrate(300); else if (type === 'shutter') navigator.vibrate(100); else if (type === 'success') navigator.vibrate([50, 50, 50, 50]); } };
 
-  useEffect(() => { let interval = null; if (screen === 'play-timer' && isTimerActive && timer > 0) interval = setInterval(() => setTimer((t) => t - 1), 1000); else if (screen === 'play-timer' && isTimerActive && timer === 0) { playSound('bang'); drawPosition(); setTimer(60); } return () => clearInterval(interval); }, [screen, isTimerActive, timer]);
+  useEffect(() => { let interval = null; if (screen === 'play-timer' && isTimerActive && timer > 0) interval = setInterval(() => setTimer((t) => t - 1), 1000); else if (screen === 'play-timer' && isTimerActive && timer === 0) { playSound('bang'); drawPosition(); setTimer(60); setIsTimerActive(false); } return () => clearInterval(interval); }, [screen, isTimerActive, timer]);
   useEffect(() => { let interval = null; if (isCardTimerRunning && cardTimer > 0) interval = setInterval(() => setCardTimer((t) => t - 1), 1000); else if (isCardTimerRunning && cardTimer === 0) { playSound('bang'); setIsCardTimerRunning(false); } return () => clearInterval(interval); }, [isCardTimerRunning, cardTimer]);
 
   const handleAudienceSelect = (audience) => { setSelectedAudience(audience); setScreen('games'); };
@@ -607,7 +619,7 @@ export default function App() {
     const audId = selectedAudience?.id; const filterContent = (data) => (heatLevel === 'all' ? data : data.filter(item => item.level <= heatLevel));
     if (gameId === 'cards') { let base = CARDS_DATA[audId] || CARDS_DATA.default; if (audId !== 'default' && !CARDS_DATA[audId]) base = [...CARDS_DATA.default]; setCardDeck(shuffleArray(filterContent(base))); }
     else if (gameId === 'kama' || gameId === 'timer') setKamaDeck(shuffleArray(filterContent(KAMA_POSITIONS))); else if (gameId === 'never') setNeverDeck(shuffleArray(filterContent(NEVER_DATA))); else if (gameId === 'photo') { let base = PHOTO_DATA[audId] || PHOTO_DATA.default; if(!PHOTO_DATA[audId]) base = PHOTO_DATA.default; setPhotoDeck(shuffleArray(filterContent(base))); }
-    else if (gameId === 'roleplay') setCardDeck(shuffleArray(ROLEPLAY_DATA)); // Lógica especial para Roleplay
+    else if (gameId === 'roleplay') setCardDeck(shuffleArray(filterContent(ROLEPLAY_DATA))); // Lógica especial para Roleplay
     setScreen(`play-${gameId}`);
   };
   const goBack = () => { setIsTimerActive(false); setIsCardTimerRunning(false); if (screen.startsWith('play-')) setScreen('games'); else if (screen === 'games') setScreen('audience'); else if (screen === 'audience') setScreen('home'); };
@@ -616,7 +628,7 @@ export default function App() {
   const pickSmartItem = (deck) => { if (heatLevel !== 'all') { const item = deck[deck.length - 1]; return { item, newDeck: deck.slice(0, deck.length - 1) }; } else { const minAllowed = currentSessionHeat >= 4 ? 3 : Math.max(1, currentSessionHeat - 1); const maxAllowed = Math.min(5, currentSessionHeat + 1); let candidates = deck.filter(item => item.level >= minAllowed && item.level <= maxAllowed); if (candidates.length === 0) candidates = deck.filter(item => item.level >= minAllowed); if (candidates.length === 0) candidates = deck; const item = candidates[Math.floor(Math.random() * candidates.length)]; setCurrentSessionHeat(item.level); return { item, newDeck: deck.filter(i => i !== item) }; } };
   const showBonusScreen = () => { const bonus = BONUS_DATA[Math.floor(Math.random() * BONUS_DATA.length)]; setBonusCard(bonus); setScreen('bonus'); playSound('success'); };
 
-  const drawCard = () => { let currentDeck = [...cardDeck]; if (currentDeck.length === 0) { let base = CARDS_DATA[selectedAudience?.id] || CARDS_DATA.default; if (selectedAudience?.id !== 'default' && !CARDS_DATA[selectedAudience?.id]) base = [...CARDS_DATA.default]; const data = filterContent(base); currentDeck = shuffleArray(data); } const { item, newDeck } = pickSmartItem(currentDeck); setCardDeck(newDeck); setCurrentCard(item); if (item.time) { setCardTimer(item.time); setIsCardTimerRunning(false); } else setCardTimer(null); if (item.isFinisher) setShowBonusButton(true); else setShowBonusButton(false); };
+  const drawCard = () => { let currentDeck = [...cardDeck]; if (currentDeck.length === 0) { let base = CARDS_DATA[selectedAudience?.id] || CARDS_DATA.default; if (selectedAudience?.id !== 'default' && !CARDS_DATA[selectedAudience?.id]) base = [...CARDS_DATA.default]; const data = filterContent(base); currentDeck = shuffleArray(data); } const { item, newDeck } = pickSmartItem(currentDeck); setCardDeck(newDeck); setCurrentCard(item); if (item.time) { setCardTimer(item.time); setIsCardTimerRunning(true); } else setCardTimer(null); if (item.isFinisher) setShowBonusButton(true); else setShowBonusButton(false); };
   const drawRoleplay = () => { let currentDeck = [...cardDeck]; if (currentDeck.length === 0) { currentDeck = shuffleArray(ROLEPLAY_DATA); } const item = currentDeck.pop(); setCardDeck(currentDeck); setCurrentCard(item); }; // Función simple para Roleplay
   const drawPosition = () => { let currentDeck = [...kamaDeck]; if (currentDeck.length === 0) { const data = filterContent(KAMA_POSITIONS); currentDeck = shuffleArray(data); } const { item, newDeck } = pickSmartItem(currentDeck); setKamaDeck(newDeck); setCurrentPos(item); };
   const nextNever = () => { let currentDeck = [...neverDeck]; if (currentDeck.length === 0) { const data = filterContent(NEVER_DATA); currentDeck = shuffleArray(data); } const { item, newDeck } = pickSmartItem(currentDeck); setNeverDeck(newDeck); setNeverText(item.text); setCurrentNeverLevel(item.level || 1); };
